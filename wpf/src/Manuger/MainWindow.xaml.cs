@@ -31,7 +31,7 @@ namespace Manuger
 			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void Button_Click_AddTeam(object sender, RoutedEventArgs e)
 		{
 			string name = ((MainViewModel)DataContext).Name;
 			if (!string.IsNullOrEmpty(name))
@@ -39,6 +39,15 @@ namespace Manuger
 				SqliteDataAccess.SaveTeam(new Team { Name = name });
 			}
 			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+		}
+
+		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
+		{
+			IEnumerable<Tour> tours = Schedule.GenerateTours(((MainViewModel)DataContext).Teams, 1);
+			SqliteDataAccess.SaveTours(tours.ToArray());
+			Tour[] toursWithId = SqliteDataAccess.LoadTours();
+			IEnumerable<Game> games = Schedule.GenerateSchedule(((MainViewModel)DataContext).Teams, toursWithId);
+			SqliteDataAccess.SaveGames(games.ToArray());
 		}
 	}
 }

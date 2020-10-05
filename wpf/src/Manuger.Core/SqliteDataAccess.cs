@@ -25,6 +25,37 @@ namespace Manuger.Core
 			}
 		}
 
+		public static Tour[] LoadTours()
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				var output = connection.Query<Tour>("select * from Tour", new DynamicParameters());
+				return output.ToArray();
+			}
+		}
+
+		public static void SaveTours(Tour[] tours)
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				for (int i = 0; i < tours.Length; ++i)
+				{
+					connection.Execute("insert into Tour (Season, Number) values (@Season, @Number)", tours[i]);
+				}
+			}
+		}
+
+		public static void SaveGames(Game[] games)
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				for (int i = 0; i < games.Length; ++i)
+				{
+					connection.Execute("insert into Game (TourId, HomeTeamId, AwayTeamId, IsFinished) values (@TourId, @HomeTeamId, @AwayTeamId, @IsFinished)", games[i]);
+				}
+			}
+		}
+
 		private static string LoadConnectionString(string id = "Default")
 		{
 			return ConfigurationManager.ConnectionStrings[id].ConnectionString;
