@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SQLite;
@@ -9,12 +8,12 @@ namespace Manuger.Core
 {
 	public class SqliteDataAccess
 	{
-		public static List<Team> LoadTeams()
+		public static Team[] LoadTeams()
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
 				var output = connection.Query<Team>("select * from Team", new DynamicParameters());
-				return output.ToList();
+				return output.ToArray();
 			}
 		}
 
@@ -22,7 +21,7 @@ namespace Manuger.Core
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
-				connection.Execute("insert into Person (Name) values (@Name)", team);
+				connection.Execute("insert into Team (Name) values (@Name)", team);
 			}
 		}
 

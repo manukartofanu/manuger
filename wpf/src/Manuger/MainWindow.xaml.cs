@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manuger.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,21 @@ namespace Manuger
 		public MainWindow()
 		{
 			InitializeComponent();
+		}
+
+		private void Window_Loaded(object sender, RoutedEventArgs e)
+		{
+			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			string name = ((MainViewModel)DataContext).Name;
+			if (!string.IsNullOrEmpty(name))
+			{
+				SqliteDataAccess.SaveTeam(new Team { Name = name });
+			}
+			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
 		}
 	}
 }
