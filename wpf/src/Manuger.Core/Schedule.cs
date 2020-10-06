@@ -16,22 +16,12 @@ namespace Manuger.Core
 
 		public static IEnumerable<Game> GenerateSchedule(Team[] teams, Tour[] tours)
 		{
-			//1 6 | 2 5 | 3 4
-			//1 2 | 3 5 | 4 6
-			//1 3 | 2 6 | 4 5
-			//1 4 | 2 3 | 5 6
-			//1 5 | 2 4 | 3 6
 			int toursCount = tours.Length / 2;
 			int gamesCountInTour = teams.Length / 2;
 			//tour 1
 			for (int i = 0; i < gamesCountInTour; ++i)
 			{
-				yield return new Game
-				{
-					HomeTeamId = teams[i].Id,
-					AwayTeamId = teams[teams.Length - i - 1].Id,
-					TourId = tours.First(t => t.Number == 1).Id
-				};
+				yield return GetFirstRoundGame(teams[i].Id, teams[teams.Length - i - 1].Id, tours.First(t => t.Number == 1).Id);
 			}
 			//tour 2 ...
 			for (int i = 1; i < toursCount; ++i)
@@ -40,42 +30,78 @@ namespace Manuger.Core
 				int gamesCountInFirstDiagonal = (i + 1) / 2;
 				for (int j = 0; j < gamesCountInFirstDiagonal; ++j)
 				{
-					yield return new Game
-					{
-						HomeTeamId = teams[j].Id,
-						AwayTeamId = teams[i - j].Id,
-						TourId = tourId
-					};
+					yield return GetFirstRoundGame(teams[j].Id, teams[i - j].Id, tourId);
 				}
 				int gamesCountInSecondDiagonal = gamesCountInTour - gamesCountInFirstDiagonal - 1;
 				for (int j = 0; j < gamesCountInSecondDiagonal; ++j)
 				{
-					yield return new Game
-					{
-						HomeTeamId = teams[i + j + 1].Id,
-						AwayTeamId = teams[teams.Length - 2 - j].Id,
-						TourId = tourId
-					};
+					yield return GetFirstRoundGame(teams[i + j + 1].Id, teams[teams.Length - 2 - j].Id, tourId);
 				}
 				if (i % 2 == 1)
 				{
-					yield return new Game
-					{
-						HomeTeamId = teams[i + 1 + gamesCountInSecondDiagonal].Id,
-						AwayTeamId = teams[teams.Length - 1].Id,
-						TourId = tourId
-					};
+					yield return GetFirstRoundGame(teams[i + 1 + gamesCountInSecondDiagonal].Id, teams[teams.Length - 1].Id, tourId);
 				}
 				else
 				{
-					yield return new Game
-					{
-						HomeTeamId = teams[gamesCountInFirstDiagonal].Id,
-						AwayTeamId = teams[teams.Length - 1].Id,
-						TourId = tourId
-					};
+					yield return GetFirstRoundGame(teams[gamesCountInFirstDiagonal].Id, teams[teams.Length - 1].Id, tourId);
 				}
 			}
+			//tour 1 + toursCount
+			for (int i = 0; i < gamesCountInTour; ++i)
+			{
+				yield return GetSecondRoundGame(teams[i].Id, teams[teams.Length - i - 1].Id, tours.First(t => t.Number == 1 + toursCount).Id);
+			}
+			//tour 2 + toursCount ...
+			for (int i = 1; i < toursCount; ++i)
+			{
+				int tourId = tours.First(t => t.Number == i + 1 + toursCount).Id;
+				int gamesCountInFirstDiagonal = (i + 1) / 2;
+				for (int j = 0; j < gamesCountInFirstDiagonal; ++j)
+				{
+					yield return GetSecondRoundGame(teams[j].Id, teams[i - j].Id, tourId);
+				}
+				int gamesCountInSecondDiagonal = gamesCountInTour - gamesCountInFirstDiagonal - 1;
+				for (int j = 0; j < gamesCountInSecondDiagonal; ++j)
+				{
+					yield return GetSecondRoundGame(teams[i + j + 1].Id, teams[teams.Length - 2 - j].Id, tourId);
+				}
+				if (i % 2 == 1)
+				{
+					yield return GetSecondRoundGame(teams[i + 1 + gamesCountInSecondDiagonal].Id, teams[teams.Length - 1].Id, tourId);
+				}
+				else
+				{
+					yield return GetSecondRoundGame(teams[gamesCountInFirstDiagonal].Id, teams[teams.Length - 1].Id, tourId);
+				}
+			}
+		}
+
+		private static Game GetFirstRoundGame(int teamId1, int teamId2, int tourId)
+		{
+			int lowerId = teamId1 > teamId2 ? teamId2 : teamId1;
+			int upperId = teamId1 > teamId2 ? teamId1 : teamId2;
+			int homeId = (teamId1 + teamId2) % 2 == 1 ? lowerId : upperId;
+			int awayId = homeId == lowerId ? upperId : lowerId;
+			return new Game
+			{
+				HomeTeamId = homeId,
+				AwayTeamId = awayId,
+				TourId = tourId
+			};
+		}
+
+		private static Game GetSecondRoundGame(int teamId1, int teamId2, int tourId)
+		{
+			int lowerId = teamId1 > teamId2 ? teamId2 : teamId1;
+			int upperId = teamId1 > teamId2 ? teamId1 : teamId2;
+			int homeId = (teamId1 + teamId2) % 2 == 1 ? upperId : lowerId;
+			int awayId = homeId == lowerId ? upperId : lowerId;
+			return new Game
+			{
+				HomeTeamId = homeId,
+				AwayTeamId = awayId,
+				TourId = tourId
+			};
 		}
 	}
 }
