@@ -45,6 +45,26 @@ namespace Manuger.Core
 			}
 		}
 
+		public static GameEx[] LoadGamesInTour(int tourId)
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				var parameter = new { TourId = tourId };
+				string query = @"select game.*, hteam.*, ateam.*
+												 from Game game
+												 join Team hteam on hteam.Id = game.HomeTeamId
+												 join Team ateam on ateam.Id = game.AwayTeamId
+												 where game.TourId = @TourId";
+				var output = connection.Query<GameEx, Team, Team, GameEx>(query, (game, homeTeam, awayTeam) =>
+				{
+					game.HomeTeam = homeTeam;
+					game.AwayTeam = awayTeam;
+					return game;
+				}, parameter);
+				return output.ToArray();
+			}
+		}
+
 		public static void SaveGames(Game[] games)
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))

@@ -1,0 +1,53 @@
+﻿<Window x:Class="Manuger.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Manuger.Views"
+		xmlns:viewModels="clr-namespace:Manuger.ViewModels"
+        mc:Ignorable="d" Loaded="Window_Loaded"
+        Title="MainWindow" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+	<Window.DataContext>
+		<viewModels:MainViewModel/>
+	</Window.DataContext>
+	<StackPanel Orientation="Vertical">
+		<Button Click="Button_Click_ShowTeams">Teams</Button>
+		<Button Margin="0 4 0 0" Click="Button_Click_Schedule">Generate schedule</Button>
+		<StackPanel Margin="0 10 0 0" Orientation="Horizontal" Height="400">
+			<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path=Name}"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<StackPanel Margin="10 0 0 0" Orientation="Vertical">
+				<Grid Height="24">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="30"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="30"/>
+					</Grid.ColumnDefinitions>
+					<Button Grid.Column="0" Click="Button_Click_Prev">&lt;</Button>
+					<TextBlock Grid.Column="1" Text="{Binding Path=Tour.Number}" TextAlignment="Center"/>
+					<Button Grid.Column="2" Click="Button_Click_Next">&gt;</Button>
+				</Grid>
+				<ListBox Height="200" Width="200" ItemsSource="{Binding Path=GamesInTour}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock TextWrapping="Wrap">
+								<Run Text="{Binding Path=HomeTeam.Name}"/>
+								<Run> </Run>
+								<Run Text="{Binding Path=HomeGoals}"/>
+								<Run> - </Run>
+								<Run Text="{Binding Path=AwayGoals}"/>
+								<Run> </Run>
+								<Run Text="{Binding Path=AwayTeam.Name}"/>
+							</TextBlock>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+		</StackPanel>
+	</StackPanel>
+</Window>

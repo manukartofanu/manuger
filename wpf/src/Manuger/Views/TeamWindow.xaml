@@ -1,13 +1,14 @@
-﻿<Window x:Class="Manuger.MainWindow"
+﻿<Window x:Class="Manuger.Views.TeamWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Manuger"
-        mc:Ignorable="d" Loaded="Window_Loaded"
-        Title="MainWindow" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+		xmlns:viewModels="clr-namespace:Manuger.ViewModels"
+        xmlns:local="clr-namespace:Manuger.Views"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        Title="Teams" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
 	<Window.DataContext>
-		<local:MainViewModel/>
+		<viewModels:TeamViewModel/>
 	</Window.DataContext>
 	<StackPanel Margin="4" Orientation="Horizontal" Height="400">
 		<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
@@ -20,8 +21,7 @@
 		<StackPanel Margin="10 0 0 0" Orientation="Vertical">
 			<Label>Name</Label>
 			<TextBox Width="200" Text="{Binding Path=Name}"/>
-			<Button Margin="0 10 0 0" Click="Button_Click_AddTeam">Add</Button>
-			<Button Margin="0 10 0 0" Click="Button_Click_Schedule">Generate schedule</Button>
+			<Button Margin="0 6 0 0" Click="Button_Click_AddTeam">Add</Button>
 		</StackPanel>
 	</StackPanel>
 </Window>

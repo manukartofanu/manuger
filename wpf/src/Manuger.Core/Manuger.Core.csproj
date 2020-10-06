@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="GameEx.cs" />
     <Compile Include="Schedule.cs" />
     <Compile Include="SqliteDataAccess.cs" />
     <Compile Include="Team.cs" />

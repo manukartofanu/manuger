@@ -2,9 +2,9 @@
 using System;
 using System.ComponentModel;
 
-namespace Manuger
+namespace Manuger.ViewModels
 {
-	public class MainViewModel : INotifyPropertyChanged
+	class TeamViewModel : INotifyPropertyChanged
 	{
 		private Team[] _teams;
 		private string _name;
