@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Manuger.Core
 {
 	public static class Schedule
 	{
+		private static Random _scoreRandom = new Random();
+
 		public static IEnumerable<Tour> GenerateTours(Team[] teams, int season)
 		{
 			int count = teams.Length * 2 - 2;
@@ -102,6 +105,16 @@ namespace Manuger.Core
 				AwayTeamId = awayId,
 				TourId = tourId
 			};
+		}
+
+		public static void GenerateResults(this Game[] games)
+		{
+			foreach (var game in games)
+			{
+				game.HomeGoals = _scoreRandom.Next(4);
+				game.AwayGoals = _scoreRandom.Next(4);
+				game.IsFinished = true;
+			}
 		}
 	}
 }

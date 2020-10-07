@@ -19,30 +19,30 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+			((MainViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 		}
 
 		private void Button_Click_ShowTeams(object sender, RoutedEventArgs e)
 		{
 			new TeamWindow().ShowDialog();
-			((MainViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+			((MainViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 		}
 
 		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
 		{
 			IEnumerable<Tour> tours = Schedule.GenerateTours(((MainViewModel)DataContext).Teams, 1);
-			SqliteDataAccess.SaveTours(tours.ToArray());
-			Tour[] toursWithId = SqliteDataAccess.LoadTours();
+			SqliteDataAccess.InsertTours(tours.ToArray());
+			Tour[] toursWithId = SqliteDataAccess.GetTours();
 			((MainViewModel)DataContext).Tours = toursWithId;
 			if (toursWithId.Length > 0)
 			{
 				((MainViewModel)DataContext).Tour = toursWithId[0];
 			}
 			IEnumerable<Game> games = Schedule.GenerateSchedule(((MainViewModel)DataContext).Teams, toursWithId);
-			SqliteDataAccess.SaveGames(games.ToArray());
+			SqliteDataAccess.InsertGames(games.ToArray());
 			if (toursWithId.Length > 0)
 			{
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.LoadGamesInTour(toursWithId[0].Id);
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(toursWithId[0].Id);
 			}
 		}
 
@@ -58,7 +58,7 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.LoadGamesInTour(tours[indexOfTour].Id);
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tours[indexOfTour].Id);
 				((MainViewModel)DataContext).Tour = tours[indexOfTour];
 			}
 		}
@@ -75,8 +75,21 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.LoadGamesInTour(tours[indexOfTour].Id);
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tours[indexOfTour].Id);
 				((MainViewModel)DataContext).Tour = tours[indexOfTour];
+			}
+		}
+
+		private void Button_Click_GenerateResults(object sender, RoutedEventArgs e)
+		{
+			var games = ((MainViewModel)DataContext).GamesInTour;
+			var tour = ((MainViewModel)DataContext).Tour;
+			games.GenerateResults();
+			SqliteDataAccess.UpdateGames(games);
+			if (tour != null)
+			{
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tour.Id);
+				((MainViewModel)DataContext).TeamStats = League.Calculate(((MainViewModel)DataContext).Teams, SqliteDataAccess.GetGamesFinished());
 			}
 		}
 	}

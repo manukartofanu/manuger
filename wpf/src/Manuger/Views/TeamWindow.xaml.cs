@@ -16,7 +16,7 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			((TeamViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+			((TeamViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 		}
 
 		private void Button_Click_AddTeam(object sender, RoutedEventArgs e)
@@ -24,9 +24,9 @@ namespace Manuger.Views
 			string name = ((TeamViewModel)DataContext).Name;
 			if (!string.IsNullOrEmpty(name))
 			{
-				SqliteDataAccess.SaveTeam(new Team { Name = name });
+				SqliteDataAccess.InsertTeam(new Team { Name = name });
 			}
-			((TeamViewModel)DataContext).Teams = SqliteDataAccess.LoadTeams();
+			((TeamViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 		}
 	}
 }

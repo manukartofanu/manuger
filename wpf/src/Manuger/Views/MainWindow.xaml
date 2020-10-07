@@ -14,10 +14,24 @@
 		<Button Click="Button_Click_ShowTeams">Teams</Button>
 		<Button Margin="0 4 0 0" Click="Button_Click_Schedule">Generate schedule</Button>
 		<StackPanel Margin="0 10 0 0" Orientation="Horizontal" Height="400">
-			<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
+			<ListBox Width="200" ItemsSource="{Binding Path=TeamStats}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Path=Name}"/>
+						<TextBlock >
+							<Run Text="{Binding Path=Name}"/>
+							<Run> : W</Run>
+							<Run Text="{Binding Path=Wins}"/>
+							<Run> D</Run>
+							<Run Text="{Binding Path=Ties}"/>
+							<Run> L</Run>
+							<Run Text="{Binding Path=Loses}"/>
+							<Run> </Run>
+							<Run Text="{Binding Path=GoalsScored}"/>
+							<Run>-</Run>
+							<Run Text="{Binding Path=GoalsConceded}"/>
+							<Run>    </Run>
+							<Run Text="{Binding Path=Points}"/>
+						</TextBlock>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
@@ -47,6 +61,7 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
+				<Button Click="Button_Click_GenerateResults">Generate results</Button>
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>

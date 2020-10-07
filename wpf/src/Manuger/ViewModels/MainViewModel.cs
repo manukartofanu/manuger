@@ -9,7 +9,8 @@ namespace Manuger.ViewModels
 		private Team[] _teams;
 		private Tour[] _tours;
 		private Tour _tour;
-		private GameEx[] _gamesInTour;
+		private Game[] _gamesInTour;
+		private TeamStat[] _teamStats;
 
 		public Team[] Teams
 		{
@@ -41,13 +42,23 @@ namespace Manuger.ViewModels
 			}
 		}
 
-		public GameEx[] GamesInTour
+		public Game[] GamesInTour
 		{
 			get { return _gamesInTour; }
 			set
 			{
 				_gamesInTour = value;
 				RaisePropertyChanged(nameof(GamesInTour));
+			}
+		}
+
+		public TeamStat[] TeamStats
+		{
+			get { return _teamStats; }
+			set
+			{
+				_teamStats = value;
+				RaisePropertyChanged(nameof(TeamStats));
 			}
 		}
 
