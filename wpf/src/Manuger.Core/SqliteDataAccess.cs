@@ -9,7 +9,19 @@ namespace Manuger.Core
 {
 	public static class SqliteDataAccess
 	{
-		private static string _databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Manuger", "schema.db");
+		private static readonly string _databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Manuger", "schema.db");
+
+		public static void UpdateDatabaseSchema()
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				var version = (long)connection.ExecuteScalar("select Version from DbInfo");
+				if (version != 1)
+				{
+					connection.Query(File.ReadAllText(@"DbScripts\1.sql"));
+				}
+			}
+		}
 
 		public static Team[] GetTeams()
 		{
@@ -111,7 +123,7 @@ namespace Manuger.Core
 			}
 		}
 
-		private static string LoadConnectionString(string id = "Default")
+		private static string LoadConnectionString()
 		{
 			return $"Data Source={_databasePath};Version=3;";
 		}

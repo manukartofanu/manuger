@@ -20,6 +20,7 @@ namespace Manuger.Views
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
 			SqliteDataAccess.CreateDatabaseIfNotExist();
+			SqliteDataAccess.UpdateDatabaseSchema();
 			((MainViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 			((MainViewModel)DataContext).Tours = SqliteDataAccess.GetTours();
 			if (((MainViewModel)DataContext).Tours.Length > 0)
