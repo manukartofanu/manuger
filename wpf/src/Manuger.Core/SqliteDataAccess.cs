@@ -1,13 +1,16 @@
 ﻿using Dapper;
-using System.Configuration;
+using System;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 
 namespace Manuger.Core
 {
-	public class SqliteDataAccess
+	public static class SqliteDataAccess
 	{
+		private static string _databasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Manuger", "schema.db");
+
 		public static Team[] GetTeams()
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
@@ -110,7 +113,16 @@ namespace Manuger.Core
 
 		private static string LoadConnectionString(string id = "Default")
 		{
-			return ConfigurationManager.ConnectionStrings[id].ConnectionString;
+			return $"Data Source={_databasePath};Version=3;";
+		}
+
+		public static void CreateDatabaseIfNotExist()
+		{
+			if (!File.Exists(_databasePath))
+			{
+				Directory.CreateDirectory(Path.GetDirectoryName(_databasePath));
+				File.Copy(@".\schema.db", _databasePath);
+			}
 		}
 	}
 }

@@ -19,13 +19,28 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+			SqliteDataAccess.CreateDatabaseIfNotExist();
 			((MainViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
+			((MainViewModel)DataContext).Tours = SqliteDataAccess.GetTours();
+			if (((MainViewModel)DataContext).Tours.Length > 0)
+			{
+				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).Tours[0];
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				((MainViewModel)DataContext).TeamStats = League.Calculate(((MainViewModel)DataContext).Teams, SqliteDataAccess.GetGamesFinished());
+			}
 		}
 
 		private void Button_Click_ShowTeams(object sender, RoutedEventArgs e)
 		{
 			new TeamWindow().ShowDialog();
 			((MainViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
+			((MainViewModel)DataContext).Tours = SqliteDataAccess.GetTours();
+			if (((MainViewModel)DataContext).Tours.Length > 0)
+			{
+				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).Tours[0];
+				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				((MainViewModel)DataContext).TeamStats = League.Calculate(((MainViewModel)DataContext).Teams, SqliteDataAccess.GetGamesFinished());
+			}
 		}
 
 		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
@@ -43,6 +58,7 @@ namespace Manuger.Views
 			if (toursWithId.Length > 0)
 			{
 				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(toursWithId[0].Id);
+				((MainViewModel)DataContext).TeamStats = League.Calculate(((MainViewModel)DataContext).Teams, SqliteDataAccess.GetGamesFinished());
 			}
 		}
 
