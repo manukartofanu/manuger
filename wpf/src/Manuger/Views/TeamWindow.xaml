@@ -21,6 +21,8 @@
 		<StackPanel Margin="10 0 0 0" Orientation="Vertical">
 			<Label>Name</Label>
 			<TextBox Width="200" Text="{Binding Path=Name}"/>
+			<Label>Country</Label>
+			<ComboBox ItemsSource="{Binding Path=Countries}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Country}"/>
 			<Button Margin="0 6 0 0" Click="Button_Click_AddTeam">Add</Button>
 		</StackPanel>
 	</StackPanel>

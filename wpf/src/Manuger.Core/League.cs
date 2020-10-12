@@ -2,12 +2,34 @@
 
 namespace Manuger.Core
 {
-	public static class League
+	public class League
 	{
-		public static TeamStat[] Calculate(Team[] teams, Game[] games)
+		public int Id { get; set; }
+		public int CountryId { get; set; }
+		public Country Country { get; set; }
+		public int Season { get; set; }
+		public Team[] Teams { get; set; }
+		public Tour[] Tours { get; set; }
+		public Game[] Games { get; set; }
+		public TeamStat[] TeamStats { get; set; }
+
+		public class TeamStat
 		{
-			var result = teams.Select(team => new TeamStat { TeamId = team.Id, Name = team.Name }).ToArray();
-			foreach (var game in games.Where(t => t.IsFinished))
+			public int TeamId { get; set; }
+			public string Name { get; set; }
+			public int Points { get; set; }
+			public int Wins { get; set; }
+			public int Ties { get; set; }
+			public int Loses { get; set; }
+			public int GoalsScored { get; set; }
+			public int GoalsConceded { get; set; }
+			public int GoalDifference { get { return GoalsScored - GoalsConceded; } }
+		}
+
+		public void Calculate()
+		{
+			var result = Teams.Select(team => new TeamStat { TeamId = team.Id, Name = team.Name }).ToArray();
+			foreach (var game in Games.Where(t => t.IsFinished))
 			{
 				var homeTeam = result.First(t => t.TeamId == game.HomeTeamId);
 				var awayTeam = result.First(t => t.TeamId == game.AwayTeamId);
@@ -37,7 +59,7 @@ namespace Manuger.Core
 			{
 				result[i].Points = result[i].Wins * 3 + result[i].Ties;
 			}
-			return result.OrderByDescending(t => t.Points).OrderByDescending(t => t.GoalDifference).ToArray();
+			TeamStats = result.OrderByDescending(t => t.Points).OrderByDescending(t => t.GoalDifference).ToArray();
 		}
 	}
 }

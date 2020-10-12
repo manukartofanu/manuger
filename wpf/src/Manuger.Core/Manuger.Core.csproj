@@ -58,7 +58,6 @@
     <Compile Include="SqliteDataAccess.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TeamStat.cs" />
     <Compile Include="Tour.cs" />
   </ItemGroup>
   <ItemGroup>

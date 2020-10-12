@@ -8,12 +8,12 @@ namespace Manuger.Core
 	{
 		private static Random _scoreRandom = new Random();
 
-		public static IEnumerable<Tour> GenerateTours(Team[] teams, int season)
+		public static IEnumerable<Tour> GenerateTours(Team[] teams, long leagueId)
 		{
 			int count = teams.Length * 2 - 2;
 			for (int i = 0; i < count; ++i)
 			{
-				yield return new Tour { Season = season, Number = i + 1 };
+				yield return new Tour { LeagueId = leagueId, Number = i + 1 };
 			}
 		}
 

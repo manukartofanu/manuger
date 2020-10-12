@@ -13,8 +13,19 @@
 	<StackPanel Orientation="Vertical">
 		<Button Click="Button_Click_ShowTeams">Teams</Button>
 		<Button Margin="0 4 0 0" Click="Button_Click_Schedule">Generate schedule</Button>
+		<TextBlock HorizontalAlignment="Center">Season</TextBlock>
+		<Grid Height="24">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="30"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="30"/>
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0" Click="Button_Click_Season_Prev">&lt;</Button>
+			<TextBlock Grid.Column="1" Text="{Binding Path=League.Season}" TextAlignment="Center"/>
+			<Button Grid.Column="2" Click="Button_Click_Season_Next">&gt;</Button>
+		</Grid>
 		<StackPanel Margin="0 10 0 0" Orientation="Horizontal" Height="400">
-			<ListBox Width="200" ItemsSource="{Binding Path=TeamStats}">
+			<ListBox Width="200" ItemsSource="{Binding Path=TeamsStat}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<TextBlock >

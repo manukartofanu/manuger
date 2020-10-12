@@ -6,29 +6,29 @@ namespace Manuger.ViewModels
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
-		private Team[] _teams;
-		private Tour[] _tours;
+		private League[] _leagues;
+		private League _league;
 		private Tour _tour;
 		private Game[] _gamesInTour;
-		private TeamStat[] _teamStats;
+		private League.TeamStat[] _teamsStat;
 
-		public Team[] Teams
+		public League[] Leagues
 		{
-			get { return _teams; }
+			get { return _leagues; }
 			set
 			{
-				_teams = value;
-				RaisePropertyChanged(nameof(Teams));
+				_leagues = value;
+				RaisePropertyChanged(nameof(Leagues));
 			}
 		}
 
-		public Tour[] Tours
+		public League League
 		{
-			get { return _tours; }
+			get { return _league; }
 			set
 			{
-				_tours = value;
-				RaisePropertyChanged(nameof(Tours));
+				_league = value;
+				RaisePropertyChanged(nameof(League));
 			}
 		}
 
@@ -52,13 +52,13 @@ namespace Manuger.ViewModels
 			}
 		}
 
-		public TeamStat[] TeamStats
+		public League.TeamStat[] TeamsStat
 		{
-			get { return _teamStats; }
+			get { return _teamsStat; }
 			set
 			{
-				_teamStats = value;
-				RaisePropertyChanged(nameof(TeamStats));
+				_teamsStat = value;
+				RaisePropertyChanged(nameof(TeamsStat));
 			}
 		}
 

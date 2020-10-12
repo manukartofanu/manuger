@@ -7,7 +7,9 @@ namespace Manuger.ViewModels
 	class TeamViewModel : INotifyPropertyChanged
 	{
 		private Team[] _teams;
+		private Country[] _countries;
 		private string _name;
+		private Country _country;
 
 		public Team[] Teams
 		{
@@ -19,6 +21,16 @@ namespace Manuger.ViewModels
 			}
 		}
 
+		public Country[] Countries
+		{
+			get { return _countries; }
+			set
+			{
+				_countries = value;
+				RaisePropertyChanged(nameof(Countries));
+			}
+		}
+
 		public string Name
 		{
 			get { return _name; }
@@ -26,6 +38,16 @@ namespace Manuger.ViewModels
 			{
 				_name = value;
 				RaisePropertyChanged(nameof(Name));
+			}
+		}
+
+		public Country Country
+		{
+			get { return _country; }
+			set
+			{
+				_country = value;
+				RaisePropertyChanged(nameof(Country));
 			}
 		}
 

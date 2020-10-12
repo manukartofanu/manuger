@@ -16,10 +16,15 @@ namespace Manuger.Core
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
 				var version = (long)connection.ExecuteScalar("select Version from DbInfo");
-				if (version != 1)
-				{
-					connection.Query(File.ReadAllText(@"DbScripts\1.sql"));
-				}
+			}
+		}
+
+		public static Country[] GetCountries()
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				var output = connection.Query<Country>("select * from Country");
+				return output.ToArray();
 			}
 		}
 
@@ -27,7 +32,7 @@ namespace Manuger.Core
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
-				var output = connection.Query<Team>("select * from Team", new DynamicParameters());
+				var output = connection.Query<Team>("select * from Team");
 				return output.ToArray();
 			}
 		}
@@ -36,15 +41,64 @@ namespace Manuger.Core
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
-				connection.Execute("insert into Team (Name) values (@Name)", team);
+				connection.Execute("insert into Team (Name, CountryId) values (@Name, @CountryId)", team);
 			}
 		}
 
-		public static Tour[] GetTours()
+		public static League[] GetLeagues()
+		{
+			League[] leagues = new League[0];
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				leagues = connection.Query<League>("select * from League").ToArray();
+				foreach (var league in leagues)
+				{
+					var parameterLeague = new { LeagueId = league.Id };
+					league.Teams = connection.Query<Team>("select * from Team team join League_Team lt on lt.TeamId = team.Id where lt.LeagueId = @LeagueId", parameterLeague).ToArray();
+					league.Tours = connection.Query<Tour>("select * from Tour where LeagueId = @LeagueId", parameterLeague).ToArray();
+				}
+			}
+			foreach (var league in leagues)
+			{
+				league.Games = GetGamesFinished(league.Id);
+			}
+			return leagues;
+		}
+
+		public static long InsertLeague(League league)
+		{
+			long id;
+			using (SQLiteConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				connection.Open();
+				SQLiteTransaction transaction = null;
+				transaction = connection.BeginTransaction();
+				connection.Execute("insert into League (CountryId, Season) values (@CountryId, @Season)", league);
+				id = connection.LastInsertRowId;
+				transaction.Commit();
+				connection.Close();
+			}
+			return id;
+		}
+
+		public static void InsertTeamsIntoLeague(long leagueId, Team[] teams)
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
-				var output = connection.Query<Tour>("select * from Tour", new DynamicParameters());
+				for (int i = 0; i < teams.Length; ++i)
+				{
+					var parameter = new { LeagueId = leagueId, TeamId = teams[i].Id };
+					connection.Execute("insert into League_Team (LeagueId, TeamId) values (@LeagueId, @TeamId)", parameter);
+				}
+			}
+		}
+
+		public static Tour[] GetTours(long leagueId)
+		{
+			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
+			{
+				var parameter = new { LeagueId = leagueId };
+				var output = connection.Query<Tour>("select * from Tour where LeagueId = @LeagueId", parameter);
 				return output.ToArray();
 			}
 		}
@@ -55,7 +109,7 @@ namespace Manuger.Core
 			{
 				for (int i = 0; i < tours.Length; ++i)
 				{
-					connection.Execute("insert into Tour (Season, Number) values (@Season, @Number)", tours[i]);
+					connection.Execute("insert into Tour (LeagueId, Number) values (@LeagueId, @Number)", tours[i]);
 				}
 			}
 		}
@@ -80,21 +134,23 @@ namespace Manuger.Core
 			}
 		}
 
-		public static Game[] GetGamesFinished()
+		public static Game[] GetGamesFinished(int leagueId)
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
 			{
+				var parameter = new { LeagueId = leagueId };
 				string query = @"select game.*, hteam.*, ateam.*
 												 from Game game
 												 join Team hteam on hteam.Id = game.HomeTeamId
 												 join Team ateam on ateam.Id = game.AwayTeamId
-												 where game.IsFinished";
+												 join Tour tour on tour.Id = game.TourId
+												 where game.IsFinished and tour.LeagueId = @LeagueId";
 				var output = connection.Query<Game, Team, Team, Game>(query, (game, homeTeam, awayTeam) =>
 				{
 					game.HomeTeam = homeTeam;
 					game.AwayTeam = awayTeam;
 					return game;
-				});
+				}, parameter);
 				return output.ToArray();
 			}
 		}
