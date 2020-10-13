@@ -59,7 +59,7 @@ namespace Manuger.Core
 			{
 				result[i].Points = result[i].Wins * 3 + result[i].Ties;
 			}
-			TeamStats = result.OrderByDescending(t => t.Points).OrderByDescending(t => t.GoalDifference).ToArray();
+			TeamStats = result.OrderByDescending(t => t.GoalDifference).OrderByDescending(t => t.Points).ToArray();
 		}
 	}
 }
