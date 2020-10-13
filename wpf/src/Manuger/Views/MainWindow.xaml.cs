@@ -42,7 +42,11 @@ namespace Manuger.Views
 		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
 		{
 			var countries = SqliteDataAccess.GetCountries();
-			var teams = SqliteDataAccess.GetTeams();
+			Team[] teams;
+			using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				teams = repository.GetAllItems().ToArray();
+			}
 			var leagues = ((MainViewModel)DataContext).Leagues;
 			int lastSeasonNumber = leagues.Length == 0 ? 0 : leagues.Max(t => t.Season);
 			long leagueId = SqliteDataAccess.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });

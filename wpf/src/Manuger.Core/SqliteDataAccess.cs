@@ -28,23 +28,6 @@ namespace Manuger.Core
 			}
 		}
 
-		public static Team[] GetTeams()
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				var output = connection.Query<Team>("select * from Team");
-				return output.ToArray();
-			}
-		}
-
-		public static void InsertTeam(Team team)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				connection.Execute("insert into Team (Name, CountryId) values (@Name, @CountryId)", team);
-			}
-		}
-
 		public static League[] GetLeagues()
 		{
 			League[] leagues = new League[0];
@@ -179,7 +162,7 @@ namespace Manuger.Core
 			}
 		}
 
-		private static string LoadConnectionString()
+		public static string LoadConnectionString()
 		{
 			return $"Data Source={_databasePath};Version=3;";
 		}

@@ -53,11 +53,13 @@
   <ItemGroup>
     <Compile Include="Country.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Schedule.cs" />
     <Compile Include="SqliteDataAccess.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TeamRepository.cs" />
     <Compile Include="Tour.cs" />
   </ItemGroup>
   <ItemGroup>

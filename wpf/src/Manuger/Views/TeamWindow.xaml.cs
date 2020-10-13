@@ -1,5 +1,6 @@
 ﻿using Manuger.Core;
 using Manuger.ViewModels;
+using System.Linq;
 using System.Windows;
 
 namespace Manuger.Views
@@ -16,7 +17,10 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			((TeamViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
+			using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
+			}
 			((TeamViewModel)DataContext).Countries = SqliteDataAccess.GetCountries();
 		}
 
@@ -26,9 +30,12 @@ namespace Manuger.Views
 			Country country = ((TeamViewModel)DataContext).Country;
 			if (!string.IsNullOrEmpty(name) && country != null)
 			{
-				SqliteDataAccess.InsertTeam(new Team { Name = name, CountryId = country.Id });
+				using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					repository.CreateItem(new Team { Name = name, CountryId = country.Id });
+					((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
+				}
 			}
-			((TeamViewModel)DataContext).Teams = SqliteDataAccess.GetTeams();
 		}
 	}
 }
