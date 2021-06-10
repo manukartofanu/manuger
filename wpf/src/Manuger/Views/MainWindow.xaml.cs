@@ -41,7 +41,11 @@ namespace Manuger.Views
 
 		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
 		{
-			var countries = SqliteDataAccess.GetCountries();
+			Country[] countries;
+			using (var repository = new CountryRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				countries = repository.GetAllItems().ToArray();
+			}
 			Team[] teams;
 			using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
 			{

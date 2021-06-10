@@ -21,7 +21,11 @@ namespace Manuger.Views
 			{
 				((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
 			}
-			((TeamViewModel)DataContext).Countries = SqliteDataAccess.GetCountries();
+			using (var repository = new CountryRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				((TeamViewModel)DataContext).Countries = repository.GetAllItems().ToArray();
+			}
+			
 		}
 
 		private void Button_Click_AddTeam(object sender, RoutedEventArgs e)

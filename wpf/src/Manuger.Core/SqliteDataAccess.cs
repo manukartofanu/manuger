@@ -19,15 +19,6 @@ namespace Manuger.Core
 			}
 		}
 
-		public static Country[] GetCountries()
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				var output = connection.Query<Country>("select * from Country");
-				return output.ToArray();
-			}
-		}
-
 		public static League[] GetLeagues()
 		{
 			League[] leagues = new League[0];
