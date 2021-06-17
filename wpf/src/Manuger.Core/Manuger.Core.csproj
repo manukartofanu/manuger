@@ -54,6 +54,9 @@
     <Compile Include="Country.cs" />
     <Compile Include="CountryRepository.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GenericRepository.cs" />
+    <Compile Include="IIdentable.cs" />
+    <Compile Include="IReadRepository.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Schedule.cs" />

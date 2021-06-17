@@ -3,12 +3,10 @@ using System.Collections.Generic;
 
 namespace Manuger.Core
 {
-	public interface IRepository<T> : IDisposable
+	public interface IReadRepository<T> : IDisposable
 		where T : class
 	{
 		IEnumerable<T> GetAllItems();
 		T GetItem(long id);
-		void CreateItem(T item);
-		void UpdateItem(T item);
 	}
 }
