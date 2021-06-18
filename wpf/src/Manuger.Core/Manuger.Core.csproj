@@ -56,7 +56,9 @@
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\IReadRepository.cs" />
     <Compile Include="Database\IRepository.cs" />
+    <Compile Include="Database\ITourRepository.cs" />
     <Compile Include="Database\TeamRepository.cs" />
+    <Compile Include="Database\TourRepository.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IIdentable.cs" />
     <Compile Include="League.cs" />

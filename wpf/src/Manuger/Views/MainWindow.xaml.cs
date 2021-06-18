@@ -57,8 +57,15 @@ namespace Manuger.Views
 			long leagueId = SqliteDataAccess.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });
 			SqliteDataAccess.InsertTeamsIntoLeague(leagueId, teams);
 			IEnumerable<Tour> tours = Schedule.GenerateTours(teams, leagueId);
-			SqliteDataAccess.InsertTours(tours.ToArray());
-			Tour[] toursWithId = SqliteDataAccess.GetTours(leagueId);
+			using (var repository = new TourRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				repository.InsertTours(tours.ToArray());
+			}
+			Tour[] toursWithId;
+			using (var repository = new TourRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				toursWithId = repository.GetToursInLeague(leagueId);
+			}
 			IEnumerable<Game> games = Schedule.GenerateSchedule(teams, toursWithId);
 			SqliteDataAccess.InsertGames(games.ToArray());
 			((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();

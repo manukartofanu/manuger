@@ -1,7 +1,7 @@
 ﻿
 namespace Manuger.Core
 {
-	public class Tour
+	public class Tour : IIdentable
 	{
 		public int Id { get; set; }
 		public long LeagueId { get; set; }

@@ -67,27 +67,6 @@ namespace Manuger.Core
 			}
 		}
 
-		public static Tour[] GetTours(long leagueId)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				var parameter = new { LeagueId = leagueId };
-				var output = connection.Query<Tour>("select * from Tour where LeagueId = @LeagueId", parameter);
-				return output.ToArray();
-			}
-		}
-
-		public static void InsertTours(Tour[] tours)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				for (int i = 0; i < tours.Length; ++i)
-				{
-					connection.Execute("insert into Tour (LeagueId, Number) values (@LeagueId, @Number)", tours[i]);
-				}
-			}
-		}
-
 		public static Game[] GetGamesInTour(int tourId)
 		{
 			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
