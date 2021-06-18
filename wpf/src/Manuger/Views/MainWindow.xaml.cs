@@ -1,4 +1,5 @@
 ﻿using Manuger.Core;
+using Manuger.Core.Database;
 using Manuger.ViewModels;
 using System;
 using System.Collections.Generic;

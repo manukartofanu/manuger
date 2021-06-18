@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 
-namespace Manuger.Core
+namespace Manuger.Core.Database
 {
 	public class GenericRepository<TItem> : IReadRepository<TItem>
 		where TItem : class, IIdentable

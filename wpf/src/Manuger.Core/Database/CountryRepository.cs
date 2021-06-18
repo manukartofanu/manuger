@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 
-namespace Manuger.Core
+namespace Manuger.Core.Database
 {
 	public class CountryRepository : GenericRepository<Country>, IRepository<Country>
 	{

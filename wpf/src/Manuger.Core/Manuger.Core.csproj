@@ -52,18 +52,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Country.cs" />
-    <Compile Include="CountryRepository.cs" />
+    <Compile Include="Database\CountryRepository.cs" />
+    <Compile Include="Database\GenericRepository.cs" />
+    <Compile Include="Database\IReadRepository.cs" />
+    <Compile Include="Database\IRepository.cs" />
+    <Compile Include="Database\TeamRepository.cs" />
     <Compile Include="Game.cs" />
-    <Compile Include="GenericRepository.cs" />
     <Compile Include="IIdentable.cs" />
-    <Compile Include="IReadRepository.cs" />
-    <Compile Include="IRepository.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Schedule.cs" />
     <Compile Include="SqliteDataAccess.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TeamRepository.cs" />
     <Compile Include="Tour.cs" />
   </ItemGroup>
   <ItemGroup>
