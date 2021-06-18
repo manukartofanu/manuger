@@ -23,8 +23,8 @@ namespace Manuger.Core.Database
 		{
 			using (IDbConnection connection = new SQLiteConnection(_connectionString))
 			{
-				var parameter = new { CountryId = id };
-				return connection.Query<TItem>($"select * from {_tableName} where Id = @CountryId", parameter).AsList().Find(t => t.Id == id);
+				var parameter = new { Id = id };
+				return connection.Query<TItem>($"select * from {_tableName} where Id = @Id", parameter).AsList().Find(t => t.Id == id);
 			}
 		}
 
