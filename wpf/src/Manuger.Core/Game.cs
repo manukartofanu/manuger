@@ -1,7 +1,7 @@
 ﻿
 namespace Manuger.Core
 {
-	public class Game
+	public class Game : IIdentable
 	{
 		public int Id { get; set; }
 		public int TourId { get; set; }

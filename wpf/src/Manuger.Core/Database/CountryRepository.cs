@@ -18,13 +18,5 @@ namespace Manuger.Core.Database
 				connection.Execute("insert into Country (Id, Code, Name) values (@Id, @Code, @Name)", item);
 			}
 		}
-
-		public void UpdateItem(Country item)
-		{
-			using (IDbConnection connection = new SQLiteConnection(_connectionString))
-			{
-				connection.Execute("update Country set Code=@Code, Name=@Name where Id=@Id", item);
-			}
-		}
 	}
 }

@@ -29,7 +29,10 @@ namespace Manuger.Views
 				int lastSeason = leagues.Max(t => t.Season);
 				((MainViewModel)DataContext).League = leagues.First(t => t.Season == lastSeason);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				}
 				((MainViewModel)DataContext).League.Calculate();
 				((MainViewModel)DataContext).TeamsStat = ((MainViewModel)DataContext).League.TeamStats;
 			}
@@ -67,14 +70,20 @@ namespace Manuger.Views
 				toursWithId = repository.GetToursInLeague(leagueId);
 			}
 			IEnumerable<Game> games = Schedule.GenerateSchedule(teams, toursWithId);
-			SqliteDataAccess.InsertGames(games.ToArray());
+			using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				repository.InsertGames(games.ToArray());
+			}
 			((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();
 			if (leagues.Length > 0)
 			{
 				int lastSeason = leagues.Max(t => t.Season);
 				((MainViewModel)DataContext).League = leagues.First(t => t.Season == lastSeason);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				}
 				((MainViewModel)DataContext).League.Calculate();
 				((MainViewModel)DataContext).TeamsStat = ((MainViewModel)DataContext).League.TeamStats;
 			}
@@ -94,7 +103,10 @@ namespace Manuger.Views
 			{
 				((MainViewModel)DataContext).League = leagues[indexOfLeague];
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				}
 				((MainViewModel)DataContext).League.Calculate();
 				((MainViewModel)DataContext).TeamsStat = ((MainViewModel)DataContext).League.TeamStats;
 			}
@@ -114,7 +126,10 @@ namespace Manuger.Views
 			{
 				((MainViewModel)DataContext).League = leagues[indexOfLeague];
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
+				}
 				((MainViewModel)DataContext).League.Calculate();
 				((MainViewModel)DataContext).TeamsStat = ((MainViewModel)DataContext).League.TeamStats;
 			}
@@ -132,7 +147,10 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tours[indexOfTour].Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
+				}
 				((MainViewModel)DataContext).Tour = tours[indexOfTour];
 			}
 		}
@@ -149,7 +167,10 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tours[indexOfTour].Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
+				}
 				((MainViewModel)DataContext).Tour = tours[indexOfTour];
 			}
 		}
@@ -162,11 +183,17 @@ namespace Manuger.Views
 			if (tour != null)
 			{
 				games.GenerateResults();
-				SqliteDataAccess.UpdateGames(games);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					repository.UpdateGames(games);
+				}
 				((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();
 				((MainViewModel)DataContext).League = ((MainViewModel)DataContext).Leagues.FirstOrDefault(t => t.Id == leagueId);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours.FirstOrDefault(t => t.Id == tour.Id);
-				((MainViewModel)DataContext).GamesInTour = SqliteDataAccess.GetGamesInTour(tour.Id);
+				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tour.Id);
+				}
 				((MainViewModel)DataContext).League.Calculate();
 				((MainViewModel)DataContext).TeamsStat = ((MainViewModel)DataContext).League.TeamStats;
 			}

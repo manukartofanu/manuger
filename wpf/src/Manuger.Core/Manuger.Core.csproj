@@ -53,7 +53,9 @@
   <ItemGroup>
     <Compile Include="Country.cs" />
     <Compile Include="Database\CountryRepository.cs" />
+    <Compile Include="Database\GameRepository.cs" />
     <Compile Include="Database\GenericRepository.cs" />
+    <Compile Include="Database\IGameRepository.cs" />
     <Compile Include="Database\IReadRepository.cs" />
     <Compile Include="Database\IRepository.cs" />
     <Compile Include="Database\ITourRepository.cs" />

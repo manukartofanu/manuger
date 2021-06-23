@@ -20,14 +20,6 @@ namespace Manuger.Core.Database
 			}
 		}
 
-		public void UpdateItem(Tour item)
-		{
-			using (IDbConnection connection = new SQLiteConnection(_connectionString))
-			{
-				connection.Execute("update Tour set LeagueId=@LeagueId, Number=@Number where Id=@Id", item);
-			}
-		}
-
 		public Tour[] GetToursInLeague(long leagueId)
 		{
 			using (IDbConnection connection = new SQLiteConnection(_connectionString))

@@ -9,6 +9,5 @@ namespace Manuger.Core.Database
 		IEnumerable<T> GetAllItems();
 		T GetItem(long id);
 		void CreateItem(T item);
-		void UpdateItem(T item);
 	}
 }

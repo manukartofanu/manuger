@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Manuger.Core.Database;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -32,9 +33,12 @@ namespace Manuger.Core
 					league.Tours = connection.Query<Tour>("select * from Tour where LeagueId = @LeagueId", parameterLeague).ToArray();
 				}
 			}
-			foreach (var league in leagues)
+			using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
 			{
-				league.Games = GetGamesFinished(league.Id);
+				foreach (var league in leagues)
+				{
+					league.Games = repository.GetGamesFinished(league.Id);
+				}
 			}
 			return leagues;
 		}
@@ -63,71 +67,6 @@ namespace Manuger.Core
 				{
 					var parameter = new { LeagueId = leagueId, TeamId = teams[i].Id };
 					connection.Execute("insert into League_Team (LeagueId, TeamId) values (@LeagueId, @TeamId)", parameter);
-				}
-			}
-		}
-
-		public static Game[] GetGamesInTour(int tourId)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				var parameter = new { TourId = tourId };
-				string query = @"select game.*, hteam.*, ateam.*
-												 from Game game
-												 join Team hteam on hteam.Id = game.HomeTeamId
-												 join Team ateam on ateam.Id = game.AwayTeamId
-												 where game.TourId = @TourId";
-				var output = connection.Query<Game, Team, Team, Game>(query, (game, homeTeam, awayTeam) =>
-				{
-					game.HomeTeam = homeTeam;
-					game.AwayTeam = awayTeam;
-					return game;
-				}, parameter);
-				return output.ToArray();
-			}
-		}
-
-		public static Game[] GetGamesFinished(int leagueId)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				var parameter = new { LeagueId = leagueId };
-				string query = @"select game.*, hteam.*, ateam.*
-												 from Game game
-												 join Team hteam on hteam.Id = game.HomeTeamId
-												 join Team ateam on ateam.Id = game.AwayTeamId
-												 join Tour tour on tour.Id = game.TourId
-												 where game.IsFinished and tour.LeagueId = @LeagueId";
-				var output = connection.Query<Game, Team, Team, Game>(query, (game, homeTeam, awayTeam) =>
-				{
-					game.HomeTeam = homeTeam;
-					game.AwayTeam = awayTeam;
-					return game;
-				}, parameter);
-				return output.ToArray();
-			}
-		}
-
-		public static void InsertGames(Game[] games)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				for (int i = 0; i < games.Length; ++i)
-				{
-					connection.Execute(@"insert into Game (TourId, HomeTeamId, AwayTeamId, IsFinished, HomeGoals, AwayGoals)
-															 values (@TourId, @HomeTeamId, @AwayTeamId, @IsFinished, @HomeGoals, @AwayGoals)", games[i]);
-				}
-			}
-		}
-
-		public static void UpdateGames(Game[] games)
-		{
-			using (IDbConnection connection = new SQLiteConnection(LoadConnectionString()))
-			{
-				for (int i = 0; i < games.Length; ++i)
-				{
-					connection.Execute(@"update Game set IsFinished = @IsFinished, HomeGoals = @HomeGoals, AwayGoals =  @AwayGoals
-															 where game.Id = @Id", games[i]);
 				}
 			}
 		}
