@@ -2,7 +2,7 @@
 
 namespace Manuger.Core
 {
-	public class League
+	public class League : IIdentable
 	{
 		public int Id { get; set; }
 		public int CountryId { get; set; }

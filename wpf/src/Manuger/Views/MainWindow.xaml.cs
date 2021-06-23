@@ -22,7 +22,10 @@ namespace Manuger.Views
 		{
 			SqliteDataAccess.CreateDatabaseIfNotExist();
 			SqliteDataAccess.UpdateDatabaseSchema();
-			((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();
+			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				((MainViewModel)DataContext).Leagues = repository.GetLeagues();
+			}
 			var leagues = ((MainViewModel)DataContext).Leagues;
 			if (leagues.Length > 0)
 			{
@@ -57,8 +60,12 @@ namespace Manuger.Views
 			}
 			var leagues = ((MainViewModel)DataContext).Leagues;
 			int lastSeasonNumber = leagues.Length == 0 ? 0 : leagues.Max(t => t.Season);
-			long leagueId = SqliteDataAccess.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });
-			SqliteDataAccess.InsertTeamsIntoLeague(leagueId, teams);
+			long leagueId;
+			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				leagueId = repository.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });
+				repository.InsertTeamsIntoLeague(leagueId, teams);
+			}
 			IEnumerable<Tour> tours = Schedule.GenerateTours(teams, leagueId);
 			using (var repository = new TourRepository(SqliteDataAccess.LoadConnectionString()))
 			{
@@ -74,7 +81,10 @@ namespace Manuger.Views
 			{
 				repository.InsertGames(games.ToArray());
 			}
-			((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();
+			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			{
+				((MainViewModel)DataContext).Leagues = repository.GetLeagues();
+			}
 			if (leagues.Length > 0)
 			{
 				int lastSeason = leagues.Max(t => t.Season);
@@ -187,7 +197,10 @@ namespace Manuger.Views
 				{
 					repository.UpdateGames(games);
 				}
-				((MainViewModel)DataContext).Leagues = SqliteDataAccess.GetLeagues();
+				using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+				{
+					((MainViewModel)DataContext).Leagues = repository.GetLeagues();
+				}
 				((MainViewModel)DataContext).League = ((MainViewModel)DataContext).Leagues.FirstOrDefault(t => t.Id == leagueId);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours.FirstOrDefault(t => t.Id == tour.Id);
 				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
