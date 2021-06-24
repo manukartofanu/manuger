@@ -18,11 +18,11 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
 			}
-			using (var repository = new CountryRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				((TeamViewModel)DataContext).Countries = repository.GetAllItems().ToArray();
 			}
@@ -35,7 +35,7 @@ namespace Manuger.Views
 			Country country = ((TeamViewModel)DataContext).Country;
 			if (!string.IsNullOrEmpty(name) && country != null)
 			{
-				using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					repository.CreateItem(new Team { Name = name, CountryId = country.Id });
 					((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Country.cs" />
     <Compile Include="Database\CountryRepository.cs" />
+    <Compile Include="Database\DatabaseSchemaUpdater.cs" />
     <Compile Include="Database\GameRepository.cs" />
     <Compile Include="Database\GenericRepository.cs" />
     <Compile Include="Database\IGameRepository.cs" />
@@ -61,13 +62,13 @@
     <Compile Include="Database\IRepository.cs" />
     <Compile Include="Database\ITourRepository.cs" />
     <Compile Include="Database\LeagueRepository.cs" />
+    <Compile Include="Database\DatabaseSourceDefinitor.cs" />
     <Compile Include="Database\TeamRepository.cs" />
     <Compile Include="Database\TourRepository.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="IIdentable.cs" />
     <Compile Include="League.cs" />
     <Compile Include="Schedule.cs" />
-    <Compile Include="SqliteDataAccess.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tour.cs" />

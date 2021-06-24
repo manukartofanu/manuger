@@ -25,7 +25,7 @@ namespace Manuger.Core.Database
 					league.Tours = connection.Query<Tour>("select * from Tour where LeagueId = @LeagueId", parameterLeague).ToArray();
 				}
 			}
-			using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				foreach (var league in leagues)
 				{

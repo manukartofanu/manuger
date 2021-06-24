@@ -20,9 +20,9 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			SqliteDataAccess.CreateDatabaseIfNotExist();
-			SqliteDataAccess.UpdateDatabaseSchema();
-			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			DatabaseSourceDefinitor.CreateDatabaseIfNotExist();
+			DatabaseSchemaUpdater.Update();
+			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				((MainViewModel)DataContext).Leagues = repository.GetLeagues();
 			}
@@ -32,7 +32,7 @@ namespace Manuger.Views
 				int lastSeason = leagues.Max(t => t.Season);
 				((MainViewModel)DataContext).League = leagues.First(t => t.Season == lastSeason);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
 				}
@@ -49,39 +49,39 @@ namespace Manuger.Views
 		private void Button_Click_Schedule(object sender, RoutedEventArgs e)
 		{
 			Country[] countries;
-			using (var repository = new CountryRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				countries = repository.GetAllItems().ToArray();
 			}
 			Team[] teams;
-			using (var repository = new TeamRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				teams = repository.GetAllItems().ToArray();
 			}
 			var leagues = ((MainViewModel)DataContext).Leagues;
 			int lastSeasonNumber = leagues.Length == 0 ? 0 : leagues.Max(t => t.Season);
 			long leagueId;
-			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				leagueId = repository.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });
 				repository.InsertTeamsIntoLeague(leagueId, teams);
 			}
 			IEnumerable<Tour> tours = Schedule.GenerateTours(teams, leagueId);
-			using (var repository = new TourRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertTours(tours.ToArray());
 			}
 			Tour[] toursWithId;
-			using (var repository = new TourRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				toursWithId = repository.GetToursInLeague(leagueId);
 			}
 			IEnumerable<Game> games = Schedule.GenerateSchedule(teams, toursWithId);
-			using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertGames(games.ToArray());
 			}
-			using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				((MainViewModel)DataContext).Leagues = repository.GetLeagues();
 			}
@@ -90,7 +90,7 @@ namespace Manuger.Views
 				int lastSeason = leagues.Max(t => t.Season);
 				((MainViewModel)DataContext).League = leagues.First(t => t.Season == lastSeason);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
 				}
@@ -113,7 +113,7 @@ namespace Manuger.Views
 			{
 				((MainViewModel)DataContext).League = leagues[indexOfLeague];
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
 				}
@@ -136,7 +136,7 @@ namespace Manuger.Views
 			{
 				((MainViewModel)DataContext).League = leagues[indexOfLeague];
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours[0];
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(((MainViewModel)DataContext).Tour.Id);
 				}
@@ -157,7 +157,7 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
 				}
@@ -177,7 +177,7 @@ namespace Manuger.Views
 			}
 			if (tours.Length > 0)
 			{
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
 				}
@@ -193,17 +193,17 @@ namespace Manuger.Views
 			if (tour != null)
 			{
 				games.GenerateResults();
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					repository.UpdateGames(games);
 				}
-				using (var repository = new LeagueRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).Leagues = repository.GetLeagues();
 				}
 				((MainViewModel)DataContext).League = ((MainViewModel)DataContext).Leagues.FirstOrDefault(t => t.Id == leagueId);
 				((MainViewModel)DataContext).Tour = ((MainViewModel)DataContext).League.Tours.FirstOrDefault(t => t.Id == tour.Id);
-				using (var repository = new GameRepository(SqliteDataAccess.LoadConnectionString()))
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					((MainViewModel)DataContext).GamesInTour = repository.GetGamesInTour(tour.Id);
 				}
