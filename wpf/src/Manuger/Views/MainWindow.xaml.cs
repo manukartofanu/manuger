@@ -60,26 +60,36 @@ namespace Manuger.Views
 			}
 			var leagues = ((MainViewModel)DataContext).Leagues;
 			int lastSeasonNumber = leagues.Length == 0 ? 0 : leagues.Max(t => t.Season);
-			long leagueId;
+			List<League> newLeagues = new List<League>();
 			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
-				leagueId = repository.InsertLeague(new League { CountryId = countries[0].Id, Season = lastSeasonNumber + 1 });
-				repository.InsertTeamsIntoLeague(leagueId, teams);
+				int newSeasonNumber = lastSeasonNumber + 1;
+				foreach (var country in countries)
+				{
+					var league = new League { CountryId = country.Id, Season = newSeasonNumber };
+					league.Id = (int)repository.InsertLeague(league);
+					newLeagues.Add(league);
+					repository.InsertTeamsIntoLeague(league.Id, teams.Where(t => t.CountryId == country.Id).ToArray());
+				}
 			}
-			IEnumerable<Tour> tours = Schedule.GenerateTours(teams, leagueId);
-			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
+			foreach (var league in newLeagues)
 			{
-				repository.InsertTours(tours.ToArray());
-			}
-			Tour[] toursWithId;
-			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				toursWithId = repository.GetToursInLeague(leagueId);
-			}
-			IEnumerable<Game> games = Schedule.GenerateSchedule(teams, toursWithId);
-			using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				repository.InsertGames(games.ToArray());
+				Team[] teamsInLeague = teams.Where(t => t.CountryId == league.CountryId).ToArray();
+				IEnumerable<Tour> tours = Schedule.GenerateTours(teamsInLeague, league.Id);
+				using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
+				{
+					repository.InsertTours(tours.ToArray());
+				}
+				Tour[] toursWithId;
+				using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
+				{
+					toursWithId = repository.GetToursInLeague(league.Id);
+				}
+				IEnumerable<Game> games = Schedule.GenerateSchedule(teamsInLeague, toursWithId);
+				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
+				{
+					repository.InsertGames(games.ToArray());
+				}
 			}
 			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
