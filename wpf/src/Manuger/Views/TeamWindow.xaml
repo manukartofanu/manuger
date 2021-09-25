@@ -10,20 +10,23 @@
 	<Window.DataContext>
 		<viewModels:TeamViewModel/>
 	</Window.DataContext>
-	<StackPanel Margin="4" Orientation="Horizontal" Height="400">
-		<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock Text="{Binding Path=Name}"/>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-		<StackPanel Margin="10 0 0 0" Orientation="Vertical">
-			<Label>Name</Label>
-			<TextBox Width="200" Text="{Binding Path=Name}"/>
-			<Label>Country</Label>
-			<ComboBox ItemsSource="{Binding Path=Countries}" DisplayMemberPath="Name" SelectedItem="{Binding Path=Country}"/>
-			<Button Margin="0 6 0 0" Click="Button_Click_AddTeam">Add</Button>
+	<StackPanel Margin="12">
+		<ComboBox ItemsSource="{Binding Path=Countries}" DisplayMemberPath="Name"
+				  SelectedItem="{Binding Path=Country}" SelectionChanged="ComboBox_SelectionChanged"/>
+		<StackPanel Margin="0 8 0 0" Orientation="Horizontal" Height="400">
+			<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path=Name}"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+			<StackPanel Margin="10 0 0 0" Orientation="Vertical">
+				<Label>Name</Label>
+				<TextBox Width="200" Text="{Binding Path=Name}"/>
+				<Label>Country</Label>
+				<Button Margin="0 6 0 0" Click="Button_Click_AddTeam">Add</Button>
+			</StackPanel>
 		</StackPanel>
 	</StackPanel>
 </Window>

@@ -18,15 +18,18 @@ namespace Manuger.Views
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
-			}
 			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				((TeamViewModel)DataContext).Countries = repository.GetAllItems().ToArray();
 			}
-			
+		}
+
+		private void ComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+		{
+			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				((TeamViewModel)DataContext).Teams = repository.GetTeamsByCountry(((TeamViewModel)DataContext).Country.Id).ToArray();
+			}
 		}
 
 		private void Button_Click_AddTeam(object sender, RoutedEventArgs e)
@@ -38,7 +41,7 @@ namespace Manuger.Views
 				using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 				{
 					repository.CreateItem(new Team { Name = name, CountryId = country.Id });
-					((TeamViewModel)DataContext).Teams = repository.GetAllItems().ToArray();
+					((TeamViewModel)DataContext).Teams = repository.GetTeamsByCountry(((TeamViewModel)DataContext).Country.Id).ToArray();
 				}
 			}
 		}
