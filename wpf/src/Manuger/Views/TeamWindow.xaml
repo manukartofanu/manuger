@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
 		xmlns:viewModels="clr-namespace:Manuger.ViewModels"
         xmlns:local="clr-namespace:Manuger.Views"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
@@ -11,8 +12,15 @@
 		<viewModels:TeamViewModel/>
 	</Window.DataContext>
 	<StackPanel Margin="12">
+		<Label>Country</Label>
 		<ComboBox ItemsSource="{Binding Path=Countries}" DisplayMemberPath="Name"
-				  SelectedItem="{Binding Path=Country}" SelectionChanged="ComboBox_SelectionChanged"/>
+				  SelectedItem="{Binding Path=Country}">
+			<ie:Interaction.Triggers>
+				<ie:EventTrigger EventName="SelectionChanged">
+					<ie:InvokeCommandAction Command="{Binding SelectCountryCommand}"/>
+				</ie:EventTrigger>
+			</ie:Interaction.Triggers>
+		</ComboBox>
 		<StackPanel Margin="0 8 0 0" Orientation="Horizontal" Height="400">
 			<ListBox Width="200" ItemsSource="{Binding Path=Teams}">
 				<ListBox.ItemTemplate>
@@ -23,9 +31,12 @@
 			</ListBox>
 			<StackPanel Margin="10 0 0 0" Orientation="Vertical">
 				<Label>Name</Label>
-				<TextBox Width="200" Text="{Binding Path=Name}"/>
-				<Label>Country</Label>
-				<Button Margin="0 6 0 0" Click="Button_Click_AddTeam">Add</Button>
+				<TextBox Width="200" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}">
+					<TextBox.InputBindings>
+						<KeyBinding Key="Return" Command="{Binding AddTeamCommand}"/>
+					</TextBox.InputBindings>
+				</TextBox>
+				<Button Margin="0 12 0 0" Command="{Binding AddTeamCommand}">Add</Button>
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>

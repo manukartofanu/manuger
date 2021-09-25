@@ -1,6 +1,10 @@
-﻿using Manuger.Core;
+﻿using Manuger.Commands;
+using Manuger.Core;
+using Manuger.Core.Database;
 using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows.Input;
 
 namespace Manuger.ViewModels
 {
@@ -10,6 +14,9 @@ namespace Manuger.ViewModels
 		private Country[] _countries;
 		private string _name;
 		private Country _country;
+
+		public ICommand SelectCountryCommand { get; private set; }
+		public ICommand AddTeamCommand { get; private set; }
 
 		public Team[] Teams
 		{
@@ -48,6 +55,33 @@ namespace Manuger.ViewModels
 			{
 				_country = value;
 				RaisePropertyChanged(nameof(Country));
+			}
+		}
+
+		public TeamViewModel()
+		{
+			SelectCountryCommand = new RelayCommand((t) => { RefreshTeams(); }, (t) => { return Country != null; });
+			AddTeamCommand = new RelayCommand((t) => { AddTeam(); }, (t) => { return Country != null && !string.IsNullOrEmpty(Name); });
+		}
+
+		private void RefreshTeams()
+		{
+			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				Teams = repository.GetTeamsByCountry(Country.Id).ToArray();
+			}
+		}
+
+		private void AddTeam()
+		{
+			string name = Name.Trim();
+			if (!string.IsNullOrEmpty(name) && Country != null)
+			{
+				using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+				{
+					repository.CreateItem(new Team { Name = name, CountryId = Country.Id });
+					Teams = repository.GetTeamsByCountry(Country.Id).ToArray();
+				}
 			}
 		}
 
