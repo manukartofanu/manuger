@@ -3,26 +3,32 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:local="clr-namespace:Manuger.Views"
 		xmlns:viewModels="clr-namespace:Manuger.ViewModels"
-        mc:Ignorable="d" Loaded="Window_Loaded"
+        mc:Ignorable="d"
         Title="MainWindow" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
 	<Window.DataContext>
 		<viewModels:MainViewModel/>
 	</Window.DataContext>
-	<StackPanel Orientation="Vertical">
-		<Button Click="Button_Click_ShowTeams">Teams</Button>
-		<Button Margin="0 4 0 0" Click="Button_Click_Schedule">Generate schedule</Button>
-		<TextBlock HorizontalAlignment="Center">Season</TextBlock>
+	<ie:Interaction.Triggers>
+		<ie:EventTrigger EventName="Loaded">
+			<ie:InvokeCommandAction Command="{Binding InitializeCommand}"/>
+		</ie:EventTrigger>
+	</ie:Interaction.Triggers>
+	<StackPanel Margin="12" Orientation="Vertical">
+		<Button Command="{Binding ShowTeamFillerCommand}">Teams</Button>
+		<Button Margin="0 6 0 0" Command="{Binding GenerateScheduleCommand}">Generate schedule</Button>
+		<TextBlock Margin="0 12 0 0" HorizontalAlignment="Center">Season</TextBlock>
 		<Grid Height="24">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="30"/>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="30"/>
 			</Grid.ColumnDefinitions>
-			<Button Grid.Column="0" Click="Button_Click_Season_Prev">&lt;</Button>
+			<Button Grid.Column="0" Command="{Binding ShowPreviousSeasonCommand}">&lt;</Button>
 			<TextBlock Grid.Column="1" Text="{Binding Path=League.Season}" TextAlignment="Center"/>
-			<Button Grid.Column="2" Click="Button_Click_Season_Next">&gt;</Button>
+			<Button Grid.Column="2" Command="{Binding ShowNextSeasonCommand}">&gt;</Button>
 		</Grid>
 		<StackPanel Margin="0 10 0 0" Orientation="Horizontal" Height="400">
 			<ListBox Width="300" ItemsSource="{Binding Path=TeamsStat}">
@@ -59,11 +65,11 @@
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="30"/>
 					</Grid.ColumnDefinitions>
-					<Button Grid.Column="0" Click="Button_Click_Prev">&lt;</Button>
+					<Button Grid.Column="0" Command="{Binding ShowPreviousTourCommand}">&lt;</Button>
 					<TextBlock Grid.Column="1" Text="{Binding Path=Tour.Number}" TextAlignment="Center"/>
-					<Button Grid.Column="2" Click="Button_Click_Next">&gt;</Button>
+					<Button Grid.Column="2" Command="{Binding ShowNextTourCommand}">&gt;</Button>
 				</Grid>
-				<ListBox Height="200" Width="200" ItemsSource="{Binding Path=GamesInTour}">
+				<ListBox Margin="0 12 0 0" Height="200" Width="200" ItemsSource="{Binding Path=GamesInTour}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock TextWrapping="Wrap">
@@ -78,7 +84,7 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
-				<Button Click="Button_Click_GenerateResults">Generate results</Button>
+				<Button Margin="0 12 0 0" Command="{Binding GenerateTourResultsCommand}">Generate results</Button>
 			</StackPanel>
 		</StackPanel>
 	</StackPanel>
