@@ -1,6 +1,7 @@
 ﻿using Manuger.Commands;
 using Manuger.Core;
 using Manuger.Core.Database;
+using Manuger.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -111,48 +112,8 @@ namespace Manuger.ViewModels
 
 		private void GenerateSchedule()
 		{
-			Country[] countries;
-			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				countries = repository.GetAllItems().ToArray();
-			}
-			Team[] teams;
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				teams = repository.GetAllItems().ToArray();
-			}
 			int lastSeasonNumber = Leagues.Length == 0 ? 0 : Leagues.Max(t => t.Season);
-			List<League> newLeagues = new List<League>();
-			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				int newSeasonNumber = lastSeasonNumber + 1;
-				foreach (var country in countries)
-				{
-					var league = new League { CountryId = country.Id, Season = newSeasonNumber };
-					league.Id = (int)repository.InsertLeague(league);
-					newLeagues.Add(league);
-					repository.InsertTeamsIntoLeague(league.Id, teams.Where(t => t.CountryId == country.Id).ToArray());
-				}
-			}
-			foreach (var league in newLeagues)
-			{
-				Team[] teamsInLeague = teams.Where(t => t.CountryId == league.CountryId).ToArray();
-				IEnumerable<Tour> tours = Schedule.GenerateTours(teamsInLeague, league.Id);
-				using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					repository.InsertTours(tours.ToArray());
-				}
-				Tour[] toursWithId;
-				using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					toursWithId = repository.GetToursInLeague(league.Id);
-				}
-				IEnumerable<Game> games = Schedule.GenerateSchedule(teamsInLeague, toursWithId);
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					repository.InsertGames(games.ToArray());
-				}
-			}
+			new LeagueModel().GenerateSeason(lastSeasonNumber + 1);
 			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				Leagues = repository.GetLeagues();

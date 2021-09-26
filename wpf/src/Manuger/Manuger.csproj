@@ -68,6 +68,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\TeamFillerShowCommand.cs" />
+    <Compile Include="Models\LeagueModel.cs" />
     <Compile Include="ViewModels\TeamViewModel.cs" />
     <Compile Include="Views\TeamWindow.xaml.cs">
       <DependentUpon>TeamWindow.xaml</DependentUpon>
