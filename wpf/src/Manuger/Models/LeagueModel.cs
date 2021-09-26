@@ -2,18 +2,36 @@
 using Manuger.Core.Database;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Manuger.Models
 {
 	public class LeagueModel
 	{
+		private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(3, 3);
+
 		public void GenerateSeason(int newSeasonNumber)
 		{
 			var newLeagues = GenerateNewLeagues(newSeasonNumber);
-			foreach (var league in newLeagues)
+			Task[] tasks = new Task[newLeagues.Count];
+			for (int i = 0; i < newLeagues.Count; ++i)
 			{
-				GenerateSchedule(league);
+				League league = newLeagues[i];
+				tasks[i] = Task.Run(() =>
+				{
+					_semaphore.Wait();
+					try
+					{
+						GenerateSchedule(league);
+					}
+					finally
+					{
+						_semaphore.Release();
+					}
+				});
 			}
+			Task.WaitAll(tasks);
 		}
 
 		private List<League> GenerateNewLeagues(int newSeasonNumber)
