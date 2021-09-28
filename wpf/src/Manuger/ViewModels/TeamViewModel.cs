@@ -15,6 +15,7 @@ namespace Manuger.ViewModels
 		private string _name;
 		private Country _country;
 
+		public ICommand LoadInitialDataCommand { get; private set; }
 		public ICommand SelectCountryCommand { get; private set; }
 		public ICommand AddTeamCommand { get; private set; }
 
@@ -60,8 +61,17 @@ namespace Manuger.ViewModels
 
 		public TeamViewModel()
 		{
+			LoadInitialDataCommand = new RelayCommand((t) => { LoadInitialData(); });
 			SelectCountryCommand = new RelayCommand((t) => { RefreshTeams(); }, (t) => { return Country != null; });
 			AddTeamCommand = new RelayCommand((t) => { AddTeam(); }, (t) => { return Country != null && !string.IsNullOrEmpty(Name); });
+		}
+
+		private void LoadInitialData()
+		{
+			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				Countries = repository.GetAllItems().ToArray();
+			}
 		}
 
 		private void RefreshTeams()

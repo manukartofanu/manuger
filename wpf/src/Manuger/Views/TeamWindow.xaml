@@ -7,10 +7,15 @@
 		xmlns:viewModels="clr-namespace:Manuger.ViewModels"
         xmlns:local="clr-namespace:Manuger.Views"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="Teams" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
+        Title="Teams" SizeToContent="WidthAndHeight">
 	<Window.DataContext>
 		<viewModels:TeamViewModel/>
 	</Window.DataContext>
+	<ie:Interaction.Triggers>
+		<ie:EventTrigger EventName="Loaded">
+			<ie:InvokeCommandAction Command="{Binding LoadInitialDataCommand}"/>
+		</ie:EventTrigger>
+	</ie:Interaction.Triggers>
 	<StackPanel Margin="12">
 		<Label>Country</Label>
 		<ComboBox ItemsSource="{Binding Path=Countries}" DisplayMemberPath="Name"

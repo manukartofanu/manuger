@@ -1,7 +1,4 @@
-﻿using Manuger.Core.Database;
-using Manuger.ViewModels;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Manuger.Views
 {
@@ -13,14 +10,6 @@ namespace Manuger.Views
 		public TeamWindow()
 		{
 			InitializeComponent();
-		}
-
-		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
-			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				((TeamViewModel)DataContext).Countries = repository.GetAllItems().ToArray();
-			}
 		}
 	}
 }
