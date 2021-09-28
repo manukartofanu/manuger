@@ -13,7 +13,7 @@ namespace Manuger.Models
 
 		public void GenerateSeason(int newSeasonNumber)
 		{
-			var newLeagues = GenerateNewLeagues(newSeasonNumber);
+			var newLeagues = CreateLeaguesOfSeason(newSeasonNumber);
 			Task[] tasks = new Task[newLeagues.Count];
 			for (int i = 0; i < newLeagues.Count; ++i)
 			{
@@ -23,7 +23,7 @@ namespace Manuger.Models
 					_semaphore.Wait();
 					try
 					{
-						GenerateSchedule(league);
+						GenerateScheduleForLeague(league);
 					}
 					finally
 					{
@@ -34,50 +34,80 @@ namespace Manuger.Models
 			Task.WaitAll(tasks);
 		}
 
-		private List<League> GenerateNewLeagues(int newSeasonNumber)
+		private List<League> CreateLeaguesOfSeason(int seasonNumber)
 		{
-			Country[] countries;
-			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				countries = repository.GetAllItems().ToArray();
-			}
-			Team[] teams;
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				teams = repository.GetAllItems().ToArray();
-			}
+			Country[] countries = GetAllCountries();
 			List<League> newLeagues = new List<League>();
-			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
+			foreach (var country in countries)
 			{
-				foreach (var country in countries)
-				{
-					var league = new League { CountryId = country.Id, Season = newSeasonNumber };
-					league.Id = (int)repository.InsertLeague(league);
-					newLeagues.Add(league);
-					repository.InsertTeamsIntoLeague(league.Id, teams.Where(t => t.CountryId == country.Id).ToArray());
-				}
+				newLeagues.Add(CreateLeague(seasonNumber, country));
 			}
 			return newLeagues;
 		}
 
-		private void GenerateSchedule(League league)
+		private void GenerateScheduleForLeague(League league)
 		{
-			Team[] teamsInLeague;
+			Team[] teamsInLeague = GetTeamsInLeague(league.Id);
+			IEnumerable<Tour> tours = Schedule.GenerateTours(teamsInLeague, league.Id);
+			InsertToursIntoRepository(tours);
+			Tour[] toursWithId = GetToursOfLeague(league.Id);
+			IEnumerable<Game> games = Schedule.GenerateSchedule(teamsInLeague, toursWithId);
+			InsertGamesIntoRepository(games);
+		}
+
+		private Country[] GetAllCountries()
+		{
+			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				return repository.GetAllItems().ToArray();
+			}
+		}
+
+		private League CreateLeague(int seasonNumber, Country country)
+		{
+			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				var league = new League { CountryId = country.Id, Season = seasonNumber };
+				league.Id = (int)repository.InsertLeague(league);
+				repository.InsertTeamsIntoLeague(league.Id, GetTeamsOfCountry(country.Id));
+				return league;
+			}
+		}
+
+		private Team[] GetTeamsOfCountry(int countryId)
+		{
 			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
-				teamsInLeague = repository.GetTeamsByLeague(league.Id).ToArray();
+				return repository.GetTeamsByCountry(countryId).ToArray();
 			}
-			IEnumerable<Tour> tours = Schedule.GenerateTours(teamsInLeague, league.Id);
+		}
+
+		private Team[] GetTeamsInLeague(int leagueId)
+		{
+			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+			{
+				return repository.GetTeamsByLeague(leagueId).ToArray();
+			}
+		}
+
+		private void InsertToursIntoRepository(IEnumerable<Tour> tours)
+		{
 			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertTours(tours.ToArray());
 			}
-			Tour[] toursWithId;
+		}
+
+		private Tour[] GetToursOfLeague(int leagueId)
+		{
 			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
-				toursWithId = repository.GetToursInLeague(league.Id);
+				return repository.GetToursInLeague(leagueId);
 			}
-			IEnumerable<Game> games = Schedule.GenerateSchedule(teamsInLeague, toursWithId);
+		}
+
+		private void InsertGamesIntoRepository(IEnumerable<Game> games)
+		{
 			using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertGames(games.ToArray());
