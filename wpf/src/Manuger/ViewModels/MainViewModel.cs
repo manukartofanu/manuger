@@ -1,4 +1,5 @@
-﻿using Manuger.Commands;
+﻿using Manuger.Ancillary;
+using Manuger.Commands;
 using Manuger.Core;
 using Manuger.Core.Database;
 using Manuger.Models;
@@ -131,28 +132,10 @@ namespace Manuger.ViewModels
 			}
 		}
 
-		private void SafeDecrement(ref int index, int lowerBound)
-		{
-			index--;
-			if (index < lowerBound)
-			{
-				index = lowerBound;
-			}
-		}
-
-		private void SafeIncrement(ref int index, int upperBound)
-		{
-			index++;
-			if (index > upperBound)
-			{
-				index = upperBound;
-			}
-		}
-
 		private void ShowPreviousSeason()
 		{
 			int indexOfLeague = Array.IndexOf(Leagues, League);
-			SafeDecrement(ref indexOfLeague, 0);
+			IndexCarer.Decrement(ref indexOfLeague, 0);
 			if (Leagues.Length > 0)
 			{
 				League = Leagues[indexOfLeague];
@@ -169,7 +152,7 @@ namespace Manuger.ViewModels
 		private void ShowNextSeason()
 		{
 			int indexOfLeague = Array.IndexOf(Leagues, League);
-			SafeIncrement(ref indexOfLeague, Leagues.Length - 1);
+			IndexCarer.Increment(ref indexOfLeague, Leagues.Length - 1);
 			if (Leagues.Length > 0)
 			{
 				League = Leagues[indexOfLeague];
@@ -187,7 +170,7 @@ namespace Manuger.ViewModels
 		{
 			var tours = League.Tours;
 			int indexOfTour = Array.IndexOf(tours, Tour);
-			SafeDecrement(ref indexOfTour, 0);
+			IndexCarer.Decrement(ref indexOfTour, 0);
 			if (tours.Length > 0)
 			{
 				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
@@ -202,7 +185,7 @@ namespace Manuger.ViewModels
 		{
 			var tours = League.Tours;
 			int indexOfTour = Array.IndexOf(tours, Tour);
-			SafeIncrement(ref indexOfTour, tours.Length - 1);
+			IndexCarer.Increment(ref indexOfTour, tours.Length - 1);
 			if (tours.Length > 0)
 			{
 				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))

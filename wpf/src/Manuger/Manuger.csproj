@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Ancillary\IndexCarer.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\TeamFillerShowCommand.cs" />
     <Compile Include="Models\LeagueModel.cs" />
