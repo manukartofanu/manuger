@@ -5,7 +5,7 @@ using System.Data.SQLite;
 
 namespace Manuger.Core.Database
 {
-	public class TeamRepository : GenericRepository<Team>, IRepository<Team>
+	public class TeamRepository : GenericRepository<Team>, ITeamRepository
 	{
 		public TeamRepository(string connectionString)
 			: base(connectionString, "Team")

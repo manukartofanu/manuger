@@ -62,7 +62,7 @@ namespace Manuger.Models
 
 		private Country[] GetAllCountries()
 		{
-			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (IRepository<Country> repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				return repository.GetAllItems().ToArray();
 			}
@@ -70,7 +70,7 @@ namespace Manuger.Models
 
 		private League CreateLeague(int seasonNumber, Country country)
 		{
-			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ILeagueRepository repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				var league = new League { CountryId = country.Id, Season = seasonNumber };
 				league.Id = (int)repository.InsertLeague(league);
@@ -81,7 +81,7 @@ namespace Manuger.Models
 
 		private Team[] GetTeamsOfCountry(int countryId)
 		{
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ITeamRepository repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				return repository.GetTeamsByCountry(countryId).ToArray();
 			}
@@ -89,7 +89,7 @@ namespace Manuger.Models
 
 		private Team[] GetTeamsInLeague(int leagueId)
 		{
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ITeamRepository repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				return repository.GetTeamsByLeague(leagueId).ToArray();
 			}
@@ -97,7 +97,7 @@ namespace Manuger.Models
 
 		private void InsertToursIntoRepository(IEnumerable<Tour> tours)
 		{
-			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ITourRepository repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertTours(tours.ToArray());
 			}
@@ -105,7 +105,7 @@ namespace Manuger.Models
 
 		private Tour[] GetToursOfLeague(int leagueId)
 		{
-			using (var repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ITourRepository repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				return repository.GetToursInLeague(leagueId);
 			}
@@ -113,7 +113,7 @@ namespace Manuger.Models
 
 		private void InsertGamesIntoRepository(IEnumerable<Game> games)
 		{
-			using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (IGameRepository repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				repository.InsertGames(games.ToArray());
 			}

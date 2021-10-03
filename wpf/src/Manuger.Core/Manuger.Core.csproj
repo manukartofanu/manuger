@@ -60,6 +60,7 @@
     <Compile Include="Database\ILeagueRepository.cs" />
     <Compile Include="Database\IReadRepository.cs" />
     <Compile Include="Database\IRepository.cs" />
+    <Compile Include="Database\ITeamRepository.cs" />
     <Compile Include="Database\ITourRepository.cs" />
     <Compile Include="Database\LeagueRepository.cs" />
     <Compile Include="Database\DatabaseSourceDefinitor.cs" />
