@@ -3,7 +3,6 @@ using Manuger.Core;
 using Manuger.Core.Database;
 using Manuger.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
@@ -132,14 +131,28 @@ namespace Manuger.ViewModels
 			}
 		}
 
+		private void SafeDecrement(ref int index, int lowerBound)
+		{
+			index--;
+			if (index < lowerBound)
+			{
+				index = lowerBound;
+			}
+		}
+
+		private void SafeIncrement(ref int index, int upperBound)
+		{
+			index++;
+			if (index > upperBound)
+			{
+				index = upperBound;
+			}
+		}
+
 		private void ShowPreviousSeason()
 		{
 			int indexOfLeague = Array.IndexOf(Leagues, League);
-			indexOfLeague--;
-			if (indexOfLeague < 0)
-			{
-				indexOfLeague = 0;
-			}
+			SafeDecrement(ref indexOfLeague, 0);
 			if (Leagues.Length > 0)
 			{
 				League = Leagues[indexOfLeague];
@@ -156,11 +169,7 @@ namespace Manuger.ViewModels
 		private void ShowNextSeason()
 		{
 			int indexOfLeague = Array.IndexOf(Leagues, League);
-			indexOfLeague++;
-			if (indexOfLeague > Leagues.Length - 1)
-			{
-				indexOfLeague = Leagues.Length - 1;
-			}
+			SafeIncrement(ref indexOfLeague, Leagues.Length - 1);
 			if (Leagues.Length > 0)
 			{
 				League = Leagues[indexOfLeague];
@@ -178,11 +187,7 @@ namespace Manuger.ViewModels
 		{
 			var tours = League.Tours;
 			int indexOfTour = Array.IndexOf(tours, Tour);
-			indexOfTour--;
-			if (indexOfTour < 0)
-			{
-				indexOfTour = 0;
-			}
+			SafeDecrement(ref indexOfTour, 0);
 			if (tours.Length > 0)
 			{
 				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
@@ -197,11 +202,7 @@ namespace Manuger.ViewModels
 		{
 			var tours = League.Tours;
 			int indexOfTour = Array.IndexOf(tours, Tour);
-			indexOfTour++;
-			if (indexOfTour > tours.Length - 1)
-			{
-				indexOfTour = tours.Length - 1;
-			}
+			SafeIncrement(ref indexOfTour, tours.Length - 1);
 			if (tours.Length > 0)
 			{
 				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
