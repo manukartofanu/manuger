@@ -14,10 +14,26 @@ namespace Manuger.Models
 		public void GenerateSeason(int newSeasonNumber)
 		{
 			var newLeagues = CreateLeaguesOfSeason(newSeasonNumber);
-			Task[] tasks = new Task[newLeagues.Count];
-			for (int i = 0; i < newLeagues.Count; ++i)
+			GenerateSchedulesOfSeason(newLeagues);
+		}
+
+		private List<League> CreateLeaguesOfSeason(int seasonNumber)
+		{
+			Country[] countries = GetAllCountries();
+			List<League> newLeagues = new List<League>();
+			foreach (var country in countries)
 			{
-				League league = newLeagues[i];
+				newLeagues.Add(CreateLeague(seasonNumber, country));
+			}
+			return newLeagues;
+		}
+
+		private void GenerateSchedulesOfSeason(List<League> leagues)
+		{
+			Task[] tasks = new Task[leagues.Count];
+			for (int i = 0; i < leagues.Count; ++i)
+			{
+				League league = leagues[i];
 				tasks[i] = Task.Run(() =>
 				{
 					_semaphore.Wait();
@@ -32,17 +48,6 @@ namespace Manuger.Models
 				});
 			}
 			Task.WaitAll(tasks);
-		}
-
-		private List<League> CreateLeaguesOfSeason(int seasonNumber)
-		{
-			Country[] countries = GetAllCountries();
-			List<League> newLeagues = new List<League>();
-			foreach (var country in countries)
-			{
-				newLeagues.Add(CreateLeague(seasonNumber, country));
-			}
-			return newLeagues;
 		}
 
 		private void GenerateScheduleForLeague(League league)
