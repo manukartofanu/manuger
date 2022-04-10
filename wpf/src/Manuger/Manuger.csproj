@@ -113,13 +113,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Manuger.SqliteRepository\Manuger.SqliteRepository.csproj">
-      <Project>{CBD8C519-BF1E-4BD8-802C-0ED5A011471D}</Project>
-      <Name>Manuger.SqliteRepository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Manuger.Core\Manuger.Core.csproj">
       <Project>{58392E51-C90A-44E3-A322-FD38DAE57C5E}</Project>
       <Name>Manuger.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Manuger.SqliteRepository\Manuger.SqliteRepository.csproj">
+      <Project>{931065d5-1483-4174-9e27-439783606e92}</Project>
+      <Name>Manuger.SqliteRepository</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
