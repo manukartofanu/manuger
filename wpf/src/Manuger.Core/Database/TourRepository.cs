@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using Manuger.Model;
+using Manuger.Model.Repository.Specific;
 using System.Data;
 using System.Data.SQLite;
 using System.Linq;

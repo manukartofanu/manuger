@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Manuger.Model;
 using System.Data;
 using System.Data.SQLite;
 

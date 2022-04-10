@@ -1,7 +1,7 @@
 ﻿using Manuger.Ancillary;
 using Manuger.Commands;
-using Manuger.Core;
 using Manuger.Core.Database;
+using Manuger.Model;
 using Manuger.Models;
 using System;
 using System.ComponentModel;

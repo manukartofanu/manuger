@@ -1,5 +1,5 @@
 ﻿
-namespace Manuger.Core.Database
+namespace Manuger.Model.Repository.Specific
 {
 	public interface ILeagueRepository : IReadRepository<League>
 	{

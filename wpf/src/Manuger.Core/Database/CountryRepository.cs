@@ -1,10 +1,12 @@
 ﻿using Dapper;
+using Manuger.Model;
+using Manuger.Model.Repository.Specific;
 using System.Data;
 using System.Data.SQLite;
 
 namespace Manuger.Core.Database
 {
-	public class CountryRepository : GenericRepository<Country>, IRepository<Country>
+	public class CountryRepository : GenericRepository<Country>, ICountryRepository
 	{
 		public CountryRepository(string connectionString)
 			: base(connectionString, "Country")

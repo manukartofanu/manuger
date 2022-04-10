@@ -1,5 +1,6 @@
-﻿using Manuger.Core;
-using Manuger.Core.Database;
+﻿using Manuger.Core.Database;
+using Manuger.Model;
+using Manuger.Model.Repository.Specific;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -62,7 +63,7 @@ namespace Manuger.Models
 
 		private Country[] GetAllCountries()
 		{
-			using (IRepository<Country> repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
+			using (ICountryRepository repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
 			{
 				return repository.GetAllItems().ToArray();
 			}

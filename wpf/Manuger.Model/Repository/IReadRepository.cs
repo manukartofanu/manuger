@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Manuger.Core.Database
+namespace Manuger.Model.Repository
 {
 	public interface IReadRepository<T> : IDisposable
 		where T : class

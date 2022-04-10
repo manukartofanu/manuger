@@ -1,5 +1,5 @@
 ﻿
-namespace Manuger.Core
+namespace Manuger.Model
 {
 	public class Tour : IIdentable
 	{

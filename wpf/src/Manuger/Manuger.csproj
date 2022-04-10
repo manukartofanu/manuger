@@ -123,6 +123,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Manuger.Model\Manuger.Model.csproj">
+      <Project>{42E3075E-2E72-4216-8450-30E195706C54}</Project>
+      <Name>Manuger.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Manuger.Core\Manuger.Core.csproj">
       <Project>{a530a761-53da-40b2-8e3d-d367115f8b7e}</Project>
       <Name>Manuger.Core</Name>

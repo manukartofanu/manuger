@@ -1,6 +1,6 @@
 ﻿using Manuger.Commands;
-using Manuger.Core;
 using Manuger.Core.Database;
+using Manuger.Model;
 using System;
 using System.ComponentModel;
 using System.Linq;
