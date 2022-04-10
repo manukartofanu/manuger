@@ -1,6 +1,6 @@
-﻿using Manuger.Model.Repository.Specific;
+﻿using Manuger.Core.Repository;
 
-namespace Manuger.Model.Repository
+namespace Manuger.Core
 {
 	public interface IRepository
 	{

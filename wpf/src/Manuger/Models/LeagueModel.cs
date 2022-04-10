@@ -1,5 +1,5 @@
-﻿using Manuger.Model;
-using Manuger.Model.Repository.Specific;
+﻿using Manuger.Core.Model;
+using Manuger.Core.Repository;
 using Manuger.SqliteRepository;
 using System.Collections.Generic;
 using System.Linq;

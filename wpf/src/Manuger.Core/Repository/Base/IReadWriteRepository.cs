@@ -1,5 +1,5 @@
 ﻿
-namespace Manuger.Model.Repository
+namespace Manuger.Core.Repository.Base
 {
 	public interface IReadWriteRepository<T> : IReadRepository<T>
 		where T : class

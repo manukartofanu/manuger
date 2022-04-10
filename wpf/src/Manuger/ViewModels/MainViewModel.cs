@@ -1,6 +1,6 @@
 ﻿using Manuger.Ancillary;
 using Manuger.Commands;
-using Manuger.Model;
+using Manuger.Core.Model;
 using Manuger.Models;
 using Manuger.SqliteRepository;
 using System;

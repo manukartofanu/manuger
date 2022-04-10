@@ -1,5 +1,5 @@
 ﻿using Manuger.Commands;
-using Manuger.Model;
+using Manuger.Core.Model;
 using Manuger.SqliteRepository;
 using System;
 using System.ComponentModel;

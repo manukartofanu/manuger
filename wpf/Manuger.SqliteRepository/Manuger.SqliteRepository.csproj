@@ -51,18 +51,18 @@
     <Compile Include="TourRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Manuger.Model\Manuger.Model.csproj">
-      <Project>{42E3075E-2E72-4216-8450-30E195706C54}</Project>
-      <Name>Manuger.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Dapper">
       <Version>2.0.123</Version>
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.Core">
       <Version>1.0.115.5</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\Manuger.Core\Manuger.Core.csproj">
+      <Project>{58392e51-c90a-44e3-a322-fd38dae57c5e}</Project>
+      <Name>Manuger.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

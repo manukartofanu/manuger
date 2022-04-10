@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Manuger.Model
+namespace Manuger.Core.Model
 {
 	public class Game : IIdentable
 	{

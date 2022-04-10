@@ -1,5 +1,5 @@
 ﻿
-namespace Manuger.Model
+namespace Manuger.Core
 {
 	public interface IIdentable
 	{

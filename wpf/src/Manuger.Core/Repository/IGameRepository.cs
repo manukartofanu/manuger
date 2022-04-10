@@ -1,5 +1,7 @@
-﻿
-namespace Manuger.Model.Repository.Specific
+﻿using Manuger.Core.Model;
+using Manuger.Core.Repository.Base;
+
+namespace Manuger.Core.Repository
 {
 	public interface IGameRepository : IReadWriteRepository<Game>
 	{

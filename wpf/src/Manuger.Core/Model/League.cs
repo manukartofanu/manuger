@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Manuger.Model
+namespace Manuger.Core.Model
 {
 	public class League : IIdentable
 	{

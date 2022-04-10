@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Manuger.Core.Model;
+using Manuger.Core.Repository.Base;
+using System.Collections.Generic;
 
-namespace Manuger.Model.Repository.Specific
+namespace Manuger.Core.Repository
 {
 	public interface ITeamRepository : IReadWriteRepository<Team>
 	{

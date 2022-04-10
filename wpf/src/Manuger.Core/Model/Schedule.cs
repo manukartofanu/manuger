@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Manuger.Model
+namespace Manuger.Core.Model
 {
 	public static class Schedule
 	{
