@@ -50,6 +50,7 @@
     <Compile Include="GenericRepository.cs" />
     <Compile Include="LeagueRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqliteRepository.cs" />
     <Compile Include="TeamRepository.cs" />
     <Compile Include="TourRepository.cs" />
   </ItemGroup>

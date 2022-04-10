@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using Manuger.Core;
+using Manuger.ViewModels;
+using System.Windows;
 
 namespace Manuger.Views
 {
@@ -7,9 +9,10 @@ namespace Manuger.Views
 	/// </summary>
 	public partial class TeamWindow : Window
 	{
-		public TeamWindow()
+		public TeamWindow(IRepository repo)
 		{
 			InitializeComponent();
+			((TeamViewModel)DataContext).Repo = repo;
 		}
 	}
 }

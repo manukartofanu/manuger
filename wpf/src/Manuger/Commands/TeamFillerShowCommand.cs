@@ -1,4 +1,5 @@
-﻿using Manuger.Views;
+﻿using Manuger.Core;
+using Manuger.Views;
 using System;
 using System.Windows.Input;
 
@@ -6,6 +7,13 @@ namespace Manuger.Commands
 {
 	public class TeamFillerShowCommand : ICommand
 	{
+		private readonly IRepository _repo;
+
+		public TeamFillerShowCommand(IRepository repo)
+		{
+			_repo = repo;
+		}
+
 		public event EventHandler CanExecuteChanged
 		{
 			add { CommandManager.RequerySuggested += value; }
@@ -19,7 +27,7 @@ namespace Manuger.Commands
 
 		public void Execute(object parameter)
 		{
-			new TeamWindow().ShowDialog();
+			new TeamWindow(_repo).ShowDialog();
 		}
 	}
 }

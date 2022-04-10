@@ -1,6 +1,6 @@
 ﻿using Manuger.Commands;
+using Manuger.Core;
 using Manuger.Core.Model;
-using Manuger.SqliteRepository;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -10,6 +10,8 @@ namespace Manuger.ViewModels
 {
 	class TeamViewModel : INotifyPropertyChanged
 	{
+		internal IRepository Repo { get; set; }
+
 		private Team[] _teams;
 		private Country[] _countries;
 		private string _name;
@@ -68,18 +70,12 @@ namespace Manuger.ViewModels
 
 		private void LoadInitialData()
 		{
-			using (var repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				Countries = repository.GetAllItems().ToArray();
-			}
+			Countries = Repo.GetCountryRepository().GetAllItems().ToArray();
 		}
 
 		private void RefreshTeams()
 		{
-			using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				Teams = repository.GetTeamsByCountry(Country.Id).ToArray();
-			}
+			Teams = Repo.GetTeamRepository().GetTeamsByCountry(Country.Id).ToArray();
 		}
 
 		private void AddTeam()
@@ -87,11 +83,9 @@ namespace Manuger.ViewModels
 			string name = Name.Trim();
 			if (!string.IsNullOrEmpty(name) && Country != null)
 			{
-				using (var repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					repository.CreateItem(new Team { Name = name, CountryId = Country.Id });
-					Teams = repository.GetTeamsByCountry(Country.Id).ToArray();
-				}
+				var repo = Repo.GetTeamRepository();
+				repo.CreateItem(new Team { Name = name, CountryId = Country.Id });
+				Teams = repo.GetTeamsByCountry(Country.Id).ToArray();
 			}
 		}
 

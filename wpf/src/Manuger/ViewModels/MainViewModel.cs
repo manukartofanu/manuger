@@ -1,8 +1,8 @@
 ﻿using Manuger.Ancillary;
 using Manuger.Commands;
+using Manuger.Core;
 using Manuger.Core.Model;
 using Manuger.Models;
-using Manuger.SqliteRepository;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -12,6 +12,8 @@ namespace Manuger.ViewModels
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
+		private IRepository Repo { get; set; }
+
 		private League[] _leagues;
 		private League _league;
 		private Tour _tour;
@@ -19,7 +21,7 @@ namespace Manuger.ViewModels
 		private League.TeamStat[] _teamsStat;
 
 		public ICommand InitializeCommand { get; private set; }
-		public ICommand ShowTeamFillerCommand { get; private set; } = new TeamFillerShowCommand();
+		public ICommand ShowTeamFillerCommand { get; private set; }
 		public ICommand GenerateScheduleCommand { get; private set; }
 		public ICommand ShowPreviousSeasonCommand { get; private set; }
 		public ICommand ShowNextSeasonCommand { get; private set; }
@@ -79,7 +81,9 @@ namespace Manuger.ViewModels
 
 		public MainViewModel()
 		{
+			Repo = new SqliteRepository.SqliteRepository();
 			InitializeCommand = new RelayCommand((t) => { InitializeData(); });
+			ShowTeamFillerCommand = new TeamFillerShowCommand(Repo);
 			GenerateScheduleCommand = new RelayCommand((t) => { GenerateSchedule(); });
 			ShowPreviousSeasonCommand = new RelayCommand((t) => { ShowPreviousSeason(); });
 			ShowNextSeasonCommand = new RelayCommand((t) => { ShowNextSeason(); });
@@ -90,21 +94,15 @@ namespace Manuger.ViewModels
 
 		private void InitializeData()
 		{
-			DatabaseSourceDefinitor.CreateDatabaseIfNotExist();
-			DatabaseSchemaUpdater.Update();
-			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				Leagues = repository.GetLeagues();
-			}
+			SqliteRepository.DatabaseSourceDefinitor.CreateDatabaseIfNotExist();
+			SqliteRepository.DatabaseSchemaUpdater.Update();
+			Leagues = Repo.GetLeagueRepository().GetLeagues();
 			if (Leagues.Length > 0)
 			{
 				int lastSeason = Leagues.Max(t => t.Season);
 				League = Leagues.First(t => t.Season == lastSeason);
 				Tour = League.Tours[0];
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(Tour.Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(Tour.Id);
 				League.Calculate();
 				TeamsStat = League.TeamStats;
 			}
@@ -114,19 +112,13 @@ namespace Manuger.ViewModels
 		{
 			int lastSeasonNumber = Leagues.Length == 0 ? 0 : Leagues.Max(t => t.Season);
 			new LeagueModel().GenerateSeason(lastSeasonNumber + 1);
-			using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				Leagues = repository.GetLeagues();
-			}
+			Leagues = Repo.GetLeagueRepository().GetLeagues();
 			if (Leagues.Length > 0)
 			{
 				int lastSeason = Leagues.Max(t => t.Season);
 				League = Leagues.First(t => t.Season == lastSeason);
 				Tour = League.Tours[0];
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(Tour.Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(Tour.Id);
 				League.Calculate();
 				TeamsStat = League.TeamStats;
 			}
@@ -140,10 +132,7 @@ namespace Manuger.ViewModels
 			{
 				League = Leagues[indexOfLeague];
 				Tour = League.Tours[0];
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(Tour.Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(Tour.Id);
 				League.Calculate();
 				TeamsStat = League.TeamStats;
 			}
@@ -157,10 +146,7 @@ namespace Manuger.ViewModels
 			{
 				League = Leagues[indexOfLeague];
 				Tour = League.Tours[0];
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(Tour.Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(Tour.Id);
 				League.Calculate();
 				TeamsStat = League.TeamStats;
 			}
@@ -173,10 +159,7 @@ namespace Manuger.ViewModels
 			IndexCarer.Decrement(ref indexOfTour, 0);
 			if (tours.Length > 0)
 			{
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(tours[indexOfTour].Id);
 				Tour = tours[indexOfTour];
 			}
 		}
@@ -188,10 +171,7 @@ namespace Manuger.ViewModels
 			IndexCarer.Increment(ref indexOfTour, tours.Length - 1);
 			if (tours.Length > 0)
 			{
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(tours[indexOfTour].Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(tours[indexOfTour].Id);
 				Tour = tours[indexOfTour];
 			}
 		}
@@ -202,20 +182,11 @@ namespace Manuger.ViewModels
 			if (Tour != null)
 			{
 				GamesInTour.GenerateResults();
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					repository.UpdateGames(GamesInTour);
-				}
-				using (var repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					Leagues = repository.GetLeagues();
-				}
+				Repo.GetGameRepository().UpdateGames(GamesInTour);
+				Leagues = Repo.GetLeagueRepository().GetLeagues();
 				League = Leagues.FirstOrDefault(t => t.Id == leagueId);
 				Tour = League.Tours.FirstOrDefault(t => t.Id == Tour.Id);
-				using (var repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-				{
-					GamesInTour = repository.GetGamesInTour(Tour.Id);
-				}
+				GamesInTour = Repo.GetGameRepository().GetGamesInTour(Tour.Id);
 				League.Calculate();
 				TeamsStat = League.TeamStats;
 			}
