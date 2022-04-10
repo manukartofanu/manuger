@@ -3,7 +3,7 @@ using Manuger.Model;
 using System.Data;
 using System.Data.SQLite;
 
-namespace Manuger.Core.Database
+namespace Manuger.SqliteRepository
 {
 	public class DatabaseSchemaUpdater
 	{

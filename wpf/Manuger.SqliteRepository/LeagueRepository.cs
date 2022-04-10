@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 
-namespace Manuger.Core.Database
+namespace Manuger.SqliteRepository
 {
 	public class LeagueRepository : GenericRepository<League>, ILeagueRepository
 	{

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 
-namespace Manuger.Core.Database
+namespace Manuger.SqliteRepository
 {
 	public class TeamRepository : GenericRepository<Team>, ITeamRepository
 	{

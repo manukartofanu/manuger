@@ -1,6 +1,6 @@
-﻿using Manuger.Core.Database;
-using Manuger.Model;
+﻿using Manuger.Model;
 using Manuger.Model.Repository.Specific;
+using Manuger.SqliteRepository;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

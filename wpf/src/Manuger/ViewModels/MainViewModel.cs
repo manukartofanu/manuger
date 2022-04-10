@@ -1,8 +1,8 @@
 ﻿using Manuger.Ancillary;
 using Manuger.Commands;
-using Manuger.Core.Database;
 using Manuger.Model;
 using Manuger.Models;
+using Manuger.SqliteRepository;
 using System;
 using System.ComponentModel;
 using System.Linq;

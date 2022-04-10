@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Manuger.Core.Database
+namespace Manuger.SqliteRepository
 {
 	public class DatabaseSourceDefinitor
 	{
