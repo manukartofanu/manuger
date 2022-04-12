@@ -3,6 +3,7 @@ using Manuger.Commands;
 using Manuger.Core;
 using Manuger.Core.Model;
 using Manuger.Models;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Manuger.ViewModels
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
-		private IRepository Repo { get; set; }
+		private IDatabase Repo { get; set; }
 
 		private League[] _leagues;
 		private League _league;
@@ -21,6 +22,8 @@ namespace Manuger.ViewModels
 		private League.TeamStat[] _teamsStat;
 
 		public ICommand InitializeCommand { get; private set; }
+		public ICommand CreateDatabaseFileCommand { get; private set; }
+		public ICommand SetDatabaseFileCommand { get; private set; }
 		public ICommand ShowTeamFillerCommand { get; private set; }
 		public ICommand GenerateScheduleCommand { get; private set; }
 		public ICommand ShowPreviousSeasonCommand { get; private set; }
@@ -81,9 +84,11 @@ namespace Manuger.ViewModels
 
 		public MainViewModel()
 		{
-			Repo = new SqliteRepository.SqliteRepository();
-			InitializeCommand = new RelayCommand((t) => { InitializeData(); });
+			Repo = new SqliteRepository.SqliteDatabase();
 			ShowTeamFillerCommand = new TeamFillerShowCommand(Repo);
+			InitializeCommand = new RelayCommand((t) => { InitializeData(); });
+			CreateDatabaseFileCommand = new RelayCommand((t) => { CreateDatabaseFile(); });
+			SetDatabaseFileCommand = new RelayCommand((t) => { SetDatabaseFile(); });
 			GenerateScheduleCommand = new RelayCommand((t) => { GenerateSchedule(); });
 			ShowPreviousSeasonCommand = new RelayCommand((t) => { ShowPreviousSeason(); });
 			ShowNextSeasonCommand = new RelayCommand((t) => { ShowNextSeason(); });
@@ -94,8 +99,11 @@ namespace Manuger.ViewModels
 
 		private void InitializeData()
 		{
-			SqliteRepository.DatabaseSourceDefinitor.CreateDatabaseIfNotExist();
-			SqliteRepository.DatabaseSchemaUpdater.Update();
+			RefreshData();
+		}
+
+		private void RefreshData()
+		{
 			Leagues = Repo.GetLeagueRepository().GetLeagues();
 			if (Leagues.Length > 0)
 			{
@@ -108,10 +116,30 @@ namespace Manuger.ViewModels
 			}
 		}
 
+		private void CreateDatabaseFile()
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			if (saveFileDialog.ShowDialog() == true)
+			{
+				Repo.SetDataSource(saveFileDialog.FileName);
+				RefreshData();
+			}
+		}
+
+		private void SetDatabaseFile()
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			if (openFileDialog.ShowDialog() == true)
+			{
+				Repo.SetDataSource(openFileDialog.FileName);
+				RefreshData();
+			}
+		}
+
 		private void GenerateSchedule()
 		{
 			int lastSeasonNumber = Leagues.Length == 0 ? 0 : Leagues.Max(t => t.Season);
-			new LeagueModel().GenerateSeason(lastSeasonNumber + 1);
+			new LeagueModel(Repo).GenerateSeason(lastSeasonNumber + 1);
 			Leagues = Repo.GetLeagueRepository().GetLeagues();
 			if (Leagues.Length > 0)
 			{

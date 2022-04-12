@@ -9,7 +9,7 @@ namespace Manuger.Views
 	/// </summary>
 	public partial class TeamWindow : Window
 	{
-		public TeamWindow(IRepository repo)
+		public TeamWindow(IDatabase repo)
 		{
 			InitializeComponent();
 			((TeamViewModel)DataContext).Repo = repo;

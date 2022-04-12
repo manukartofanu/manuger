@@ -10,7 +10,7 @@ namespace Manuger.ViewModels
 {
 	class TeamViewModel : INotifyPropertyChanged
 	{
-		internal IRepository Repo { get; set; }
+		internal IDatabase Repo { get; set; }
 
 		private Team[] _teams;
 		private Country[] _countries;

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IIdentable.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="IDatabase.cs" />
     <Compile Include="Model\Country.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="Model\League.cs" />

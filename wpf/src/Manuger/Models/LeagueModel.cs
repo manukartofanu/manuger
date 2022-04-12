@@ -1,6 +1,5 @@
-﻿using Manuger.Core.Model;
-using Manuger.Core.Repository;
-using Manuger.SqliteRepository;
+﻿using Manuger.Core;
+using Manuger.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -10,7 +9,13 @@ namespace Manuger.Models
 {
 	public class LeagueModel
 	{
+		private readonly IDatabase _repo;
 		private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(3, 3);
+
+		public LeagueModel(IDatabase database)
+		{
+			_repo = database;
+		}
 
 		public void GenerateSeason(int newSeasonNumber)
 		{
@@ -63,61 +68,41 @@ namespace Manuger.Models
 
 		private Country[] GetAllCountries()
 		{
-			using (ICountryRepository repository = new CountryRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				return repository.GetAllItems().ToArray();
-			}
+			return _repo.GetCountryRepository().GetAllItems().ToArray();
 		}
 
 		private League CreateLeague(int seasonNumber, Country country)
 		{
-			using (ILeagueRepository repository = new LeagueRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				var league = new League { CountryId = country.Id, Season = seasonNumber };
-				league.Id = (int)repository.InsertLeague(league);
-				repository.InsertTeamsIntoLeague(league.Id, GetTeamsOfCountry(country.Id));
-				return league;
-			}
+			var repository = _repo.GetLeagueRepository();
+			var league = new League { CountryId = country.Id, Season = seasonNumber };
+			league.Id = (int)repository.InsertLeague(league);
+			repository.InsertTeamsIntoLeague(league.Id, GetTeamsOfCountry(country.Id));
+			return league;
 		}
 
 		private Team[] GetTeamsOfCountry(int countryId)
 		{
-			using (ITeamRepository repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				return repository.GetTeamsByCountry(countryId).ToArray();
-			}
+			return _repo.GetTeamRepository().GetTeamsByCountry(countryId).ToArray();
 		}
 
 		private Team[] GetTeamsInLeague(int leagueId)
 		{
-			using (ITeamRepository repository = new TeamRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				return repository.GetTeamsByLeague(leagueId).ToArray();
-			}
+			return _repo.GetTeamRepository().GetTeamsByLeague(leagueId).ToArray();
 		}
 
 		private void InsertToursIntoRepository(IEnumerable<Tour> tours)
 		{
-			using (ITourRepository repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				repository.InsertTours(tours.ToArray());
-			}
+			_repo.GetTourRepository().InsertTours(tours.ToArray());
 		}
 
 		private Tour[] GetToursOfLeague(int leagueId)
 		{
-			using (ITourRepository repository = new TourRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				return repository.GetToursInLeague(leagueId);
-			}
+			return _repo.GetTourRepository().GetToursInLeague(leagueId);
 		}
 
 		private void InsertGamesIntoRepository(IEnumerable<Game> games)
 		{
-			using (IGameRepository repository = new GameRepository(DatabaseSourceDefinitor.ConnectionString))
-			{
-				repository.InsertGames(games.ToArray());
-			}
+			_repo.GetGameRepository().InsertGames(games.ToArray());
 		}
 	}
 }

@@ -2,8 +2,9 @@
 
 namespace Manuger.Core
 {
-	public interface IRepository
+	public interface IDatabase
 	{
+		void SetDataSource(string path);
 		ICountryRepository GetCountryRepository();
 		IGameRepository GetGameRepository();
 		ILeagueRepository GetLeagueRepository();

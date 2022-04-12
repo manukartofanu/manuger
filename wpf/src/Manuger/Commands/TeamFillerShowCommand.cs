@@ -7,9 +7,9 @@ namespace Manuger.Commands
 {
 	public class TeamFillerShowCommand : ICommand
 	{
-		private readonly IRepository _repo;
+		private readonly IDatabase _repo;
 
-		public TeamFillerShowCommand(IRepository repo)
+		public TeamFillerShowCommand(IDatabase repo)
 		{
 			_repo = repo;
 		}

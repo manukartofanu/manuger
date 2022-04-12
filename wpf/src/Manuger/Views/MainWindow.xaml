@@ -17,7 +17,9 @@
 		</ie:EventTrigger>
 	</ie:Interaction.Triggers>
 	<StackPanel Margin="12" Orientation="Vertical">
-		<Button Command="{Binding ShowTeamFillerCommand}">Teams</Button>
+		<Button Command="{Binding CreateDatabaseFileCommand}">New database</Button>
+		<Button Margin="0 6 0 0" Command="{Binding SetDatabaseFileCommand}">Choose database</Button>
+		<Button Margin="0 6 0 0" Command="{Binding ShowTeamFillerCommand}">Teams</Button>
 		<Button Margin="0 6 0 0" Command="{Binding GenerateScheduleCommand}">Generate schedule</Button>
 		<TextBlock Margin="0 12 0 0" HorizontalAlignment="Center">Season</TextBlock>
 		<Grid Height="24">
